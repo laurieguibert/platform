@@ -63,4 +63,3 @@ class Level
         return $this->name;
     }
 }
-

@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="part")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PartRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Part
 {
@@ -35,6 +36,25 @@ class Part
      */
     private $content;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $created_at;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated_at;
+
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime("now");
+    }
 
     /**
      * Get id
@@ -93,5 +113,60 @@ class Part
     {
         return $this->content;
     }
-}
 
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Part
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Part
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \Datetime());
+    }
+}

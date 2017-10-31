@@ -63,4 +63,3 @@ class DurationType
         return $this->name;
     }
 }
-

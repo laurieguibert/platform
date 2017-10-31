@@ -63,4 +63,3 @@ class LessonType
         return $this->name;
     }
 }
-

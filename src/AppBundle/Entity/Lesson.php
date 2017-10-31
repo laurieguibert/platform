@@ -49,6 +49,30 @@ class Lesson
      */
     private $certificate;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\LessonType")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $lesson_type;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\DurationType")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $duration_type;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sector")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sector;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Level")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $level;
+
 
     /**
      * Get id
@@ -155,5 +179,100 @@ class Lesson
     {
         return $this->certificate;
     }
-}
 
+    /**
+     * Set lessonType
+     *
+     * @param \AppBundle\Entity\LessonType $lessonType
+     *
+     * @return Lesson
+     */
+    public function setLessonType(\AppBundle\Entity\LessonType $lessonType)
+    {
+        $this->lesson_type = $lessonType;
+
+        return $this;
+    }
+
+    /**
+     * Get lessonType
+     *
+     * @return \AppBundle\Entity\LessonType
+     */
+    public function getLessonType()
+    {
+        return $this->lesson_type;
+    }
+
+    /**
+     * Set durationType
+     *
+     * @param \AppBundle\Entity\DurationType $durationType
+     *
+     * @return Lesson
+     */
+    public function setDurationType(\AppBundle\Entity\DurationType $durationType)
+    {
+        $this->duration_type = $durationType;
+
+        return $this;
+    }
+
+    /**
+     * Get durationType
+     *
+     * @return \AppBundle\Entity\DurationType
+     */
+    public function getDurationType()
+    {
+        return $this->duration_type;
+    }
+
+    /**
+     * Set sector
+     *
+     * @param \AppBundle\Entity\Sector $sector
+     *
+     * @return Lesson
+     */
+    public function setSector(\AppBundle\Entity\Sector $sector)
+    {
+        $this->sector = $sector;
+
+        return $this;
+    }
+
+    /**
+     * Get sector
+     *
+     * @return \AppBundle\Entity\Sector
+     */
+    public function getSector()
+    {
+        return $this->sector;
+    }
+
+    /**
+     * Set level
+     *
+     * @param \AppBundle\Entity\Level $level
+     *
+     * @return Lesson
+     */
+    public function setLevel(\AppBundle\Entity\Level $level)
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    /**
+     * Get level
+     *
+     * @return \AppBundle\Entity\Level
+     */
+    public function getLevel()
+    {
+        return $this->level;
+    }
+}

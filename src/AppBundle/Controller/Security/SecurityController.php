@@ -10,6 +10,7 @@ namespace AppBundle\Controller\Security;
 
 
 use Lcobucci\JWT\Builder;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,13 +23,24 @@ class SecurityController extends Controller
     /**
      * @Route("/login", name="login")
      * @Method({"POST"})
+     * @ApiDoc(
+     *  description="Formulaire de connexion",
+     *  section="User",
+     *  resource = true,
+     *  input = "AppBundle\Form\UserType",
+     *  output = "AppBundle\Entity\User",
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the form has errors"
+     *  }
+     * )
      */
     public function loginAction(Request $request) {
         $user = $this->getUser();
 
         $token = (new Builder())
             ->setIssuedAt(time())
-            ->setExpiration(time() + 3600)
+            ->setExpiration(time() + 21600)
             ->set('username', $user->getUsername())
             ->set('email', $user->getEmail())
             ->getToken();

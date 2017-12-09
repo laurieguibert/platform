@@ -8,21 +8,16 @@ use Symfony\Component\Form\FormInterface;
  * Date: 06/12/2017
  * Time: 21:31
  */
-class FormErrorsRecuperator
+class FormErrorsRenderer
 {
-    public function getFormErrors(FormInterface $form)
+    public function renderErrors($errors)
     {
-        $errors = array();
-        foreach ($form->getErrors() as $error) {
-            $errors[] = $error->getMessage();
-        }
-        foreach ($form->all() as $childForm) {
-            if ($childForm instanceof FormInterface) {
-                if ($childErrors = $this->getFormErrors($childForm)) {
-                    $errors[$childForm->getName()] = $childErrors;
-                }
-            }
-        }
-        return $errors;
+        $data = [
+            'type' => 'validation_error',
+            'title' => 'There was a validation error',
+            'errors' => $errors
+        ];
+
+        return $data;
     }
 }

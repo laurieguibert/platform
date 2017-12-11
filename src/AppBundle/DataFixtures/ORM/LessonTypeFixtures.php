@@ -16,11 +16,14 @@ class LessonTypeFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $data = ['Texte', 'Vidéo', 'Image', 'Fiche'];
+        $data = ['Texte', 'Vidéo', 'Image', 'Fiche', 'Questionnaire'];
+        $i = 0;
         foreach ($data as $d){
             $lessonType = new LessonType();
             $lessonType->setName($d);
             $manager->persist($lessonType);
+            $this->addReference('lessonType'.$i, $lessonType);
+            $i ++;
         }
 
         $manager->flush();

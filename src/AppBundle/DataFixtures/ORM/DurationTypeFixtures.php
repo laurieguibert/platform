@@ -16,11 +16,14 @@ class DurationTypeFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $data = ['jours', 'semaines', 'mois', 'années'];
+        $data = ['heures', 'jours', 'semaines', 'mois', 'années'];
+        $i = 0;
         foreach ($data as $d){
             $durationType = new DurationType();
             $durationType->setName($d);
             $manager->persist($durationType);
+            $this->addReference('durationType'.$i, $durationType);
+            $i++;
         }
 
         $manager->flush();

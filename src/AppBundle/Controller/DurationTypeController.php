@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\DurationType;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -22,6 +24,16 @@ class DurationTypeController extends Controller
      *
      * @Route("/", name="durationtype_index")
      * @Method("GET")
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Show all durations type",
+     *  section="Duration",
+     *  output= { "class"=DurationType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Not found"
+     *  }
+     * )
      */
     public function indexAction()
     {
@@ -29,12 +41,12 @@ class DurationTypeController extends Controller
 
         $durationTypes = $em->getRepository('AppBundle:DurationType')->findAll();
         if(empty($durationTypes)){
-            return new Response("No duration type registered !");
+            return new Response("No duration type registered !", 400);
         } else {
             $data = $this->get('serializer')->normalize([
                 'durationTypes' => $durationTypes
             ]);
-            return new JsonResponse($data);
+            return new JsonResponse($data, 200);
         }
     }
 
@@ -43,6 +55,19 @@ class DurationTypeController extends Controller
      *
      * @Route("/new", name="durationtype_new")
      * @Method({"POST"})
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Create new duration type",
+     *  section="Duration",
+     *  input={
+     *   "class"="AppBundle\Form\DurationTypeType",
+     *  },
+     *  output= { "class"=DurationType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
      */
     public function newAction(Request $request)
     {
@@ -54,7 +79,7 @@ class DurationTypeController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($durationType);
             $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($durationType));
+            return new JsonResponse($this->get('serializer')->normalize($durationType), 200);
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($form);
@@ -70,12 +95,22 @@ class DurationTypeController extends Controller
      *
      * @Route("/{id}", name="durationtype_show")
      * @Method({"GET"})
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Show a duration type",
+     *  section="Duration",
+     *  output= { "class"=DurationType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
      */
     public function showAction($id)
     {
         $durationType = $this->getDoctrine()->getRepository('AppBundle:DurationType')->findOneById($id);
         if ($durationType === null) {
-            return new Response("Le type de durée n'existe pas", 404);
+            return new Response("Duration type not found", 404);
         }
         $data = $this->get('serializer')->normalize([
             'durationType' => $durationType
@@ -89,6 +124,19 @@ class DurationTypeController extends Controller
      *
      * @Route("/{id}/edit", name="durationtype_edit")
      * @Method({"POST"})
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Update a duration type",
+     *  section="Duration",
+     *  input={
+     *   "class"="AppBundle\Form\DurationTypeType",
+     *  },
+     *  output= { "class"=DurationType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
      */
     public function editAction(Request $request, DurationType $durationType)
     {
@@ -99,7 +147,7 @@ class DurationTypeController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($durationType);
             $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($durationType));
+            return new JsonResponse($this->get('serializer')->normalize($durationType), 200);
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($editForm);
@@ -114,8 +162,17 @@ class DurationTypeController extends Controller
      *
      * @Route("/{id}", name="durationtype_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Delete a duration type",
+     *  section="Duration",
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
      */
-    public function deleteAction(Request $request, DurationType $durationType)
+    public function deleteAction(Request $request)
     {
         $em = $this->get('doctrine.orm.entity_manager');
         $durationType = $em->getRepository('AppBundle:DurationType')
@@ -125,9 +182,9 @@ class DurationTypeController extends Controller
             $em->remove($durationType);
             $em->flush();
 
-            return new Response("Le type de durée " . $request->get('id') . " a été supprimé", 202 );
+            return new Response("Duration type " . $request->get('id') . " was deleted !", 200 );
         } else {
-            return new Response("Le type de durée " . $request->get('id') . " n'existe pas");
+            return new Response("Duration type " . $request->get('id') . " not found !", 404);
         }
     }
 }

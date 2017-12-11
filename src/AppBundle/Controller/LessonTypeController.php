@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\LessonType;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -22,6 +24,15 @@ class LessonTypeController extends Controller
      *
      * @Route("/", name="lessontype_index")
      * @Method("GET")
+     * @ApiDoc(
+     *  description="Show all lessons type",
+     *  section="LessonType",
+     *  output= {"class"=LessonType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
      */
     public function indexAction()
     {
@@ -29,12 +40,12 @@ class LessonTypeController extends Controller
 
         $lessonTypes = $em->getRepository('AppBundle:LessonType')->findAll();
         if(empty($lessonTypes)){
-            return new Response("No lesson type registered !");
+            return new Response("No lesson type registered !", 404);
         } else {
             $data = $this->get('serializer')->normalize([
                 'lessonTypes' => $lessonTypes
             ]);
-            return new JsonResponse($data);
+            return new JsonResponse($data, 200);
         }
     }
 
@@ -43,6 +54,19 @@ class LessonTypeController extends Controller
      *
      * @Route("/new", name="lessontype_new")
      * @Method({"POST"})
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Create new lesson type",
+     *  section="LessonType",
+     *  input={
+     *   "class"="AppBundle\Form\LessonTypeType",
+     *  },
+     *  output= {"class"=LessonType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
      */
     public function newAction(Request $request)
     {
@@ -54,7 +78,7 @@ class LessonTypeController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($lessonType);
             $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($lessonType));
+            return new JsonResponse($this->get('serializer')->normalize($lessonType), 200);
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($form);
@@ -70,6 +94,16 @@ class LessonTypeController extends Controller
      *
      * @Route("/{id}", name="lessontype_show")
      * @Method("GET")
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Show a lesson type",
+     *  section="LessonType",
+     *  output= {"class"=LessonType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
      */
     public function showAction($id)
     {
@@ -89,6 +123,19 @@ class LessonTypeController extends Controller
      *
      * @Route("/{id}/edit", name="lessontype_edit")
      * @Method({"POST"})
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Update a lesson type",
+     *  section="LessonType",
+     *  input={
+     *   "class"="AppBundle\Form\LessonTypeType",
+     *  },
+     *  output= { "class"=LessonType::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
      */
     public function editAction(Request $request, LessonType $lessonType)
     {
@@ -105,7 +152,7 @@ class LessonTypeController extends Controller
             $errors = $formErrorsRecuperator->getFormErrors($editForm);
             $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
             $data = $formErrorRenderer->renderErrors($errors);
-            return new JsonResponse($errors, 400);
+            return new JsonResponse($data, 400);
         }
     }
 
@@ -114,6 +161,15 @@ class LessonTypeController extends Controller
      *
      * @Route("/{id}", name="lessontype_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Delete a lesson type",
+     *  section="LessonType",
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Not found"
+     *  }
+     * )
      */
     public function deleteAction(Request $request)
     {

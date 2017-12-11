@@ -24,14 +24,14 @@ class SecurityController extends Controller
      * @Route("/login", name="login")
      * @Method({"POST"})
      * @ApiDoc(
-     *  description="Formulaire de connexion",
-     *  section="User",
+     *  description="Login form",
+     *  section="Security",
      *  resource = true,
      *  input = "AppBundle\Form\UserType",
      *  output = "AppBundle\Entity\User",
      *  statusCodes = {
-     *      200 = "Returned when successful",
-     *      400 = "Returned when the form has errors"
+     *      200 = "Successful",
+     *      400 = "Validation errors"
      *  }
      * )
      */

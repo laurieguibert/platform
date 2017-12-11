@@ -11,6 +11,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Lesson controller.
@@ -209,7 +212,7 @@ class LessonController extends Controller
      * )
      *
      */
-    public function getBySector($name){
+    public function getBySectorName($name){
         $sector = $this->getDoctrine()->getManager()->getRepository('AppBundle:Sector')->findByName($name);
         $lessons = $this->getDoctrine()->getManager()->getRepository('AppBundle:Lesson')->findBySector($sector);
         if(!$lessons){
@@ -217,5 +220,42 @@ class LessonController extends Controller
         }
 
         return new JsonResponse($this->get('serializer')->normalize($lessons), 200);
+    }
+
+    /**
+     * Finds and displays lessons by duration type and duration.
+     *
+     * @Route("/duration/{duration}/{type}", name="lesson_by_duration")
+     * @Method("GET")
+     * @ApiDoc(
+     *  description="Show lessons by duration and duration type",
+     *  section="Lesson",
+     *  output= {"class"=Lesson::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
+     *
+     */
+    public function getByDuration($duration, $type){
+        $durationType = $this->getDoctrine()->getManager()->getRepository('AppBundle:DurationType')->findOneByName($type);
+        if(!$durationType){
+            return new Response("The duration type '" . $type . "' doesn't exist !", 404);
+        }
+        $lessons = $this->getDoctrine()->getRepository('AppBundle:Lesson')->getByDurationAndDurationType($duration, $durationType->getId());
+        if(!$lessons){
+            return new Response("No lesson registered for duration '" . $duration . " " . $type . "' !", 404);
+        }
+        $normalizer = new ObjectNormalizer();
+        $encoder = new JsonEncoder();
+        $normalizer->setCircularReferenceLimit(2);
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $normalizers = array($normalizer);
+        $serializer = new Serializer(array($normalizers), array($encoder));
+
+        return new Response($serializer->serialize($lessons,'json'), 200);
     }
 }

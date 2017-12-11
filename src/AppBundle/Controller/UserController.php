@@ -26,9 +26,14 @@ class UserController extends Controller
      *
      * @Route("/", name="user_index")
      * @Method("GET")
+     * @Security("has_role('ROLE_ADMIN')")
      * @ApiDoc(
-     *  description="Listing des users",
-     *  section="User"
+     *  description="Show all users",
+     *  section="User",
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
      * )
      */
     public function indexAction()
@@ -36,10 +41,14 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $users = $em->getRepository('AppBundle:User')->findAll();
+        if(empty($users)){
+            return new Response("No user registered !", 404);
+        }
+
         $data = $this->get('serializer')->normalize([
             'users' => $users
         ]);
-        return new JsonResponse($data);
+        return new JsonResponse($data, 200);
     }
 
     /**
@@ -47,10 +56,17 @@ class UserController extends Controller
      *
      * @Route("/new", name="user_new")
      * @Method({"POST"})
-     * @Security("has_role('ROLE_ADMIN')")
      * @ApiDoc(
-     *  description="Création d'un user",
-     *  section="User"
+     *  description="Create new user",
+     *  section="User",
+     *  input={
+     *   "class"="AppBundle\Form\UserType",
+     *  },
+     *  output= { "class"=User::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
      * )
      */
     public function newAction(Request $request, UserPasswordEncoderInterface $encoder)
@@ -64,7 +80,7 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($user));
+            return new JsonResponse($this->get('serializer')->normalize($user), 200);
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($form);
@@ -83,29 +99,47 @@ class UserController extends Controller
      *
      * @Route("/{id}", name="user_show")
      * @Method({"GET"})
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
-     *  description="Affichage d'un user",
-     *  section="User"
+     *  description="Show a user",
+     *  section="User",
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
      * )
      */
     public function showAction($id)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneById($id);
         if ($user === null) {
-            return new Response("L'utilisateur n'existe pas", 404);
+            return new Response("User not found !", 404);
         }
         $data = $this->get('serializer')->normalize([
             'user' => $user
         ]);
 
-        return new JsonResponse($data);
+        return new JsonResponse($data, 200);
     }
 
     /**
      * Displays a form to edit an existing user entity.
      *
      * @Route("/{id}/edit", name="user_edit")
-     * @Method({"GET", "POST"})
+     * @Method({"POST"})
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *  description="Update user password",
+     *  section="User",
+     *  input={
+     *   "class"="AppBundle\Form\UserChangePasswordType",
+     *  },
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
      */
     public function editAction(Request $request, User $user, UserPasswordEncoderInterface $encoder)
     {
@@ -118,13 +152,13 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($user));
+            return new JsonResponse($this->get('serializer')->normalize($user), 200);
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($editForm);
             $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
             $data = $formErrorRenderer->renderErrors($errors);
-            return new JsonResponse($errors, 400);
+            return new JsonResponse($data, 400);
         }
     }
 
@@ -133,6 +167,15 @@ class UserController extends Controller
      *
      * @Route("/{id}", name="user_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_ADMIN')")
+     * @ApiDoc(
+     *  description="Delete user",
+     *  section="User",
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
      */
     public function deleteAction(Request $request, User $user)
     {
@@ -144,9 +187,44 @@ class UserController extends Controller
             $em->remove($user);
             $em->flush();
 
-            return new Response("L'utilisateur " . $request->get('id') . " a été supprimé", 202 );
+            return new Response("User " . $request->get('id') . " was deleted !", 200);
         } else {
-            return new Response("L'utilisateur " . $request->get('id') . " n'existe pas");
+            return new Response("User " . $request->get('id') . " not found !", 404);
+        }
+    }
+
+    /**
+     * Finds and displays a user entity.
+     *
+     * @Route("/{id}/lessons", name="user_lessons")
+     * @Method({"GET"})
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *  description="Show user's lessons",
+     *  section="User",
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
+     */
+    public function getLessonsAction($id)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneById($id);
+        if($user === null){
+            return new Response("No user registered with this id", 404);
+        } else {
+            $lessons = $user->getLessons();
+            if (isset($lessons)) {
+                return new Response("No lesson registered for the user !", 404);
+            } else {
+                $data = $this->get('serializer')->normalize([
+                    'lessons' => $lessons
+                ]);
+
+                return new JsonResponse($data, 200);
+            }
         }
     }
 }

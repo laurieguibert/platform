@@ -24,6 +24,7 @@ class UserChangePasswordType extends AbstractType
                 'second_options' => array(
                     'required' => true
                 ),
+                'description' => 'Change password',
             ));
     }
     

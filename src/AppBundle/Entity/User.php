@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -58,8 +59,14 @@ class User implements UserInterface
      */
     private $email;
 
-    public function __construct()
-    {
+    /**
+     * @ORM\ManyToMany(targetEntity="Lesson", inversedBy="users")
+     * @ORM\JoinTable(name="users_lessons")
+     */
+    private $lessons;
+
+    public function __construct() {
+        $this->lessons = new ArrayCollection();
         $this->roles = array("ROLE_USER");
     }
 
@@ -180,4 +187,38 @@ class User implements UserInterface
         return null;
     }
 
+
+    /**
+     * Add lesson
+     *
+     * @param \AppBundle\Entity\Lesson $lesson
+     *
+     * @return User
+     */
+    public function addLesson(\AppBundle\Entity\Lesson $lesson)
+    {
+        $this->lessons[] = $lesson;
+
+        return $this;
+    }
+
+    /**
+     * Remove lesson
+     *
+     * @param \AppBundle\Entity\Lesson $lesson
+     */
+    public function removeLesson(\AppBundle\Entity\Lesson $lesson)
+    {
+        $this->lessons->removeElement($lesson);
+    }
+
+    /**
+     * Get lessons
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLessons()
+    {
+        return $this->lessons;
+    }
 }

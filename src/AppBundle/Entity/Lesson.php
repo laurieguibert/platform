@@ -97,6 +97,7 @@ class Lesson
     public function __construct()
     {
         $this->created_at = new \DateTime("now");
+        $this->updated_at = null;
         $this->users = new ArrayCollection();
     }
 
@@ -369,6 +370,7 @@ class Lesson
     public function addUser(\AppBundle\Entity\User $user)
     {
         $this->users[] = $user;
+        $user->addLesson($this);
 
         return $this;
     }

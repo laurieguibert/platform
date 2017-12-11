@@ -67,26 +67,30 @@ class LessonController extends Controller
     public function newAction(Request $request)
     {
         $lesson = new Lesson();
-        $form = $this->createForm('AppBundle\Form\LessonType', $lesson);
-        $form->submit(json_decode($request->getContent(), true));
+        $data = json_decode($request->getContent(), true);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($lesson);
-            $em->flush();
-
-            return new JsonResponse($this->get('serializer')->normalize($lesson), 200);
-        } else {
-            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
-            $errors = $formErrorsRecuperator->getFormErrors($form);
-            $data = [
-                'type' => 'validation_error',
-                'title' => 'There was a validation error',
-                'errors' => $errors
-            ];
-
-            return new JsonResponse($data, 400);
+        $em = $this->getDoctrine()->getManager();
+        $lesson->setName($data['name']);
+        $lesson->setDescription($data['description']);
+        $lesson->setDuration($data['duration']);
+        $lesson->setCertificate($data['certificate']);
+        $lesson_level = $em->getRepository('AppBundle:Level')->find($data['level']);
+        $lesson_duration_type = $em->getRepository('AppBundle:DurationType')->find($data['duration_type']);
+        $lesson_sector = $em->getRepository('AppBundle:Sector')->find($data['sector']);
+        $lesson_type = $em->getRepository('AppBundle:LessonType')->find($data['lesson_type']);
+        $lesson->setLessonType($lesson_type);
+        $lesson->setLevel($lesson_level);
+        $lesson->setSector($lesson_sector);
+        $lesson->setDurationType($lesson_duration_type);
+        $validator = $this->get('validator');
+        $errors = $validator->validate($lesson);
+        if (count($errors) > 0) {
+            $errorsString = (string)$errors;
+            return new Response($errorsString);
         }
+        $em->persist($lesson);
+        $em->flush();
+        return new JsonResponse($this->get('serializer')->normalize($lesson), 200);
     }
 
     /**
@@ -107,7 +111,6 @@ class LessonController extends Controller
      */
     public function showAction($id)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $lesson = $this->getDoctrine()->getRepository('AppBundle:Lesson')->findOneById($id);
         if ($lesson === null) {
             return new Response("Lesson with id " . $id . " doesn't exist", 404);

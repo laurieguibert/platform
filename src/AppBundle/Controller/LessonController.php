@@ -247,15 +247,7 @@ class LessonController extends Controller
         if(!$lessons){
             return new Response("No lesson registered for duration '" . $duration . " " . $type . "' !", 404);
         }
-        $normalizer = new ObjectNormalizer();
-        $encoder = new JsonEncoder();
-        $normalizer->setCircularReferenceLimit(2);
-        $normalizer->setCircularReferenceHandler(function ($object) {
-            return $object->getId();
-        });
-        $normalizers = array($normalizer);
-        $serializer = new Serializer(array($normalizers), array($encoder));
 
-        return new Response($serializer->serialize($lessons,'json'), 200);
+        return new JsonResponse($this->get('serializer')->normalize($lessons), 200);
     }
 }

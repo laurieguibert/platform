@@ -71,23 +71,23 @@ class SectorController extends Controller
     public function newAction(Request $request)
     {
         $sector = new Sector();
-        $form = $this->createForm('AppBundle\Form\SectorType', $sector);
-        $form->submit(json_decode($request->getContent(), true));
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            //$sector_parent = $em->getRepository('AppBundle:Sector')->findById($sector->getParentSector()->getId());
-            //$sector->setParentSector($sector_parent);
-            $em->persist($sector);
-            $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($sector), 200);
-        } else {
-            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
-            $errors = $formErrorsRecuperator->getFormErrors($form);
-            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
-            $data = $formErrorRenderer->renderErrors($errors);
+        $data = json_decode($request->getContent(), true);
 
-            return new JsonResponse($data, 400);
+        $em = $this->getDoctrine()->getManager();
+        $sector->setName($data['name']);
+        $sector->setCreatedAt(date_create(date("Y-m-d H:i:s")));
+        $sector->setUpdatedAt(null);
+        $sector_parent = $em->getRepository('AppBundle:Sector')->find($data['parent_sector']);
+        $sector->setParentSector($sector_parent);
+        $validator = $this->get('validator');
+        $errors = $validator->validate($sector);
+        if (count($errors) > 0) {
+            $errorsString = (string)$errors;
+            return new Response($errorsString);
         }
+        $em->persist($sector);
+        $em->flush();
+        return new JsonResponse($this->get('serializer')->normalize($sector), 200);
     }
 
     /**
@@ -140,21 +140,24 @@ class SectorController extends Controller
      */
     public function editAction(Request $request, Sector $sector)
     {
-        $editForm = $this->createForm('AppBundle\Form\SectorType', $sector);
-        $editForm->submit(json_decode($request->getContent(), true));
+        $data = json_decode($request->getContent(), true);
 
-        if($editForm->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($sector);
-            $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($sector), 200);
-        } else {
-            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
-            $errors = $formErrorsRecuperator->getFormErrors($editForm);
-            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
-            $data = $formErrorRenderer->renderErrors($errors);
-            return new JsonResponse($data, 400);
+        $em = $this->getDoctrine()->getManager();
+        $sector->setName($data['name']);
+        $sector->setUpdatedAt(date_create(date("Y-m-d H:i:s")));
+        if($data['parent_sector']) {
+            $sector_parent = $em->getRepository('AppBundle:Sector')->find($data['parent_sector']);
+            $sector->setParentSector($sector_parent);
         }
+        $validator = $this->get('validator');
+        $errors = $validator->validate($sector);
+        if (count($errors) > 0) {
+            $errorsString = (string)$errors;
+            return new Response($errorsString);
+        }
+        $em->persist($sector);
+        $em->flush();
+        return new JsonResponse($this->get('serializer')->normalize($sector), 200);
     }
 
     /**

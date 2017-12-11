@@ -27,6 +27,7 @@ class Sector
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Please enter a name for the sector.")
      */
     private $name;
 

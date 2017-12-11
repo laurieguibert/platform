@@ -27,6 +27,13 @@ class Lesson
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=150, unique=true)
+     * @Assert\NotBlank(message="Please enter a lesson's name.")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 255,
+     *      minMessage = "Your lesson's name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your lesson's name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $name;
 
@@ -34,6 +41,13 @@ class Lesson
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter a description.")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 255,
+     *      minMessage = "Your description must be at least {{ limit }} characters long",
+     *      maxMessage = "Your description cannot be longer than {{ limit }} characters"
+     * )
      */
     private $description;
 
@@ -41,6 +55,11 @@ class Lesson
      * @var int
      *
      * @ORM\Column(name="duration", type="integer")
+     * @Assert\NotBlank(message="Please enter a duration.")
+     * @Assert\Type(
+     *     type="integer",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      */
     private $duration;
 
@@ -48,6 +67,11 @@ class Lesson
      * @var bool
      *
      * @ORM\Column(name="certificate", type="boolean")
+     * @Assert\NotBlank(message="Please enter a duration.")
+     * @Assert\Type(
+     *     type="bool",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      */
     private $certificate;
 

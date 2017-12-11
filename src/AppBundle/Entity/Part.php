@@ -26,6 +26,13 @@ class Part
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Please enter a name for the part.")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 255,
+     *      minMessage = "Your part name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your part name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $name;
 
@@ -33,6 +40,13 @@ class Part
      * @var string
      *
      * @ORM\Column(name="content", type="string", length=1500)
+     * @Assert\NotBlank(message="Please enter a content.")
+     * @Assert\Length(
+     *      min = 20,
+     *      max = 1500,
+     *      minMessage = "Your content must be at least {{ limit }} characters long",
+     *      maxMessage = "Your content cannot be longer than {{ limit }} characters"
+     * )
      */
     private $content;
 
@@ -54,6 +68,7 @@ class Part
     public function __construct()
     {
         $this->created_at = new \DateTime("now");
+        $this->updated_at = null;
     }
 
     /**

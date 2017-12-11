@@ -25,6 +25,13 @@ class DurationType
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=25, unique=true)
+     * @Assert\NotBlank(message="Please enter a duration type's name.")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 25,
+     *      minMessage = "Your duration type's name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your duration type's name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $name;
 

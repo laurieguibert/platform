@@ -25,6 +25,13 @@ class Level
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=30, unique=true)
+     * @Assert\NotBlank(message="Please enter a level's name.")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 30,
+     *      minMessage = "Your level's name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your level's name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $name;
 

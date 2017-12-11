@@ -25,6 +25,13 @@ class LessonType
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Please enter a lesson type's name.")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 255,
+     *      minMessage = "Your lesson type's name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your lesson type's name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $name;
 

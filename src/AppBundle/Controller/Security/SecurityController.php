@@ -17,6 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 class SecurityController extends Controller
 {
@@ -37,6 +39,9 @@ class SecurityController extends Controller
      */
     public function loginAction(Request $request) {
         $user = $this->getUser();
+        if(!$user){
+            return new Response("Bad credentials !");
+        }
 
         $token = (new Builder())
             ->setIssuedAt(time())

@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $users = $em->getRepository('AppBundle:User')->findAll();
+        $users = $em->getRepository('AppBundle:User')->getUserWithoutPassword();
         if(empty($users)){
             return new Response("No user registered !", 404);
         }
@@ -84,12 +84,8 @@ class UserController extends Controller
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($form);
-            $data = [
-                'type' => 'validation_error',
-                'title' => 'There was a validation error',
-                'errors' => $errors
-            ];
-
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
             return new JsonResponse($data, 400);
         }
     }

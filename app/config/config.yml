@@ -72,3 +72,11 @@ swiftmailer:
 
 nelmio_api_doc: ~
 
+jms_payment_core:
+    encryption:
+        secret: def00000771f7717e7fc0d5375d5a6e7798ef5d6d2ecce0c8fc766b776beaa8626b07416b90a72feb33934f2da2a83b17734f5a2b144adbbb5349cad97a7cc39bd6cd188
+
+jms_payment_paypal:
+    username: your api username
+    password: your api password
+    signature: your api signature

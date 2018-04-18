@@ -44,13 +44,6 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @var array
-     *
-     * @ORM\Column(name="roles", type="array", length=255)
-     */
-    private $roles;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
@@ -60,14 +53,43 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Lesson", inversedBy="users")
-     * @ORM\JoinTable(name="users_lessons")
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean")
      */
-    private $lessons;
+    private $status;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="roles", type="array", length=255)
+     */
+    private $roles;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     */
+    protected $createdAt;
+
+    /**
+     * @var \DateTime $updated
+     *
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    protected $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="user", cascade={"persist"})
+     */
+    private $userLesson;
 
     public function __construct() {
-        $this->lessons = new ArrayCollection();
         $this->roles = array("ROLE_USER");
+        $this->status = 1;
+        $this->createdAt = new \DateTime("now");
+        $this->updatedAt = null;
     }
 
     /**
@@ -176,6 +198,31 @@ class User implements UserInterface
         return $this->email;
     }
 
+
+    /**
+     * Set status
+     *
+     * @param boolean $status
+     *
+     * @return User
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return boolean
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
@@ -187,38 +234,93 @@ class User implements UserInterface
         return null;
     }
 
-
     /**
-     * Add lesson
+     * Set createdAt
      *
-     * @param \AppBundle\Entity\Lesson $lesson
+     * @param \DateTime $createdAt
      *
      * @return User
      */
-    public function addLesson(\AppBundle\Entity\Lesson $lesson)
+    public function setCreatedAt($createdAt)
     {
-        $this->lessons[] = $lesson;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Remove lesson
+     * Get createdAt
      *
-     * @param \AppBundle\Entity\Lesson $lesson
+     * @return \DateTime
      */
-    public function removeLesson(\AppBundle\Entity\Lesson $lesson)
+    public function getCreatedAt()
     {
-        $this->lessons->removeElement($lesson);
+        return $this->createdAt;
     }
 
     /**
-     * Get lessons
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return User
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \Datetime());
+    }
+
+    /**
+     * Add userLesson
+     *
+     * @param \AppBundle\Entity\UserLesson $userLesson
+     *
+     * @return User
+     */
+    public function addUserLesson(\AppBundle\Entity\UserLesson $userLesson)
+    {
+        $this->userLesson[] = $userLesson;
+
+        return $this;
+    }
+
+    /**
+     * Remove userLesson
+     *
+     * @param \AppBundle\Entity\UserLesson $userLesson
+     */
+    public function removeUserLesson(\AppBundle\Entity\UserLesson $userLesson)
+    {
+        $this->userLesson->removeElement($userLesson);
+    }
+
+    /**
+     * Get userLesson
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getLessons()
+    public function getUserLesson()
     {
-        return $this->lessons;
+        return $this->userLesson;
     }
 }

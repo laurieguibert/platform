@@ -26,7 +26,7 @@ class UserController extends Controller
      *
      * @Route("/", name="user_index")
      * @Method("GET")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *  description="Show all users",
      *  section="User",
@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $users = $em->getRepository('AppBundle:User')->getUserWithoutPassword();
+        $users = $em->getRepository('AppBundle:User')->findAll();
         if(empty($users)){
             return new Response("No user registered !", 404);
         }
@@ -163,7 +163,7 @@ class UserController extends Controller
      *
      * @Route("/{id}", name="user_delete")
      * @Method("DELETE")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *  description="Delete user",
      *  section="User",
@@ -176,11 +176,10 @@ class UserController extends Controller
     public function deleteAction(Request $request, User $user)
     {
         $em = $this->get('doctrine.orm.entity_manager');
-        $user = $em->getRepository('AppBundle:User')
-            ->find($request->get('id'));
 
         if ($user) {
-            $em->remove($user);
+            $user->setStatus(0);
+            $em->persist($user);
             $em->flush();
 
             return new Response("User " . $request->get('id') . " was deleted !", 200);

@@ -115,15 +115,14 @@ class Lesson
     private $updated_at;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="lessons")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="lesson", cascade={"persist"})
      */
-    private $users;
+    private $userLesson;
 
     public function __construct()
     {
         $this->created_at = new \DateTime("now");
         $this->updated_at = null;
-        $this->users = new ArrayCollection();
     }
 
 
@@ -386,37 +385,36 @@ class Lesson
     }
 
     /**
-     * Add user
+     * Add userLesson
      *
-     * @param \AppBundle\Entity\User $user
+     * @param \AppBundle\Entity\UserLesson $userLesson
      *
      * @return Lesson
      */
-    public function addUser(\AppBundle\Entity\User $user)
+    public function addUserLesson(\AppBundle\Entity\UserLesson $userLesson)
     {
-        $this->users[] = $user;
-        $user->addLesson($this);
+        $this->userLesson[] = $userLesson;
 
         return $this;
     }
 
     /**
-     * Remove user
+     * Remove userLesson
      *
-     * @param \AppBundle\Entity\User $user
+     * @param \AppBundle\Entity\UserLesson $userLesson
      */
-    public function removeUser(\AppBundle\Entity\User $user)
+    public function removeUserLesson(\AppBundle\Entity\UserLesson $userLesson)
     {
-        $this->users->removeElement($user);
+        $this->userLesson->removeElement($userLesson);
     }
 
     /**
-     * Get users
+     * Get userLesson
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getUsers()
+    public function getUserLesson()
     {
-        return $this->users;
+        return $this->userLesson;
     }
 }

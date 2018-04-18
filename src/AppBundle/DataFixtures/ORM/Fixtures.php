@@ -29,7 +29,7 @@ class Fixtures extends Fixture implements ContainerAwareInterface
 
     public function load(ObjectManager $manager)
     {
-        $encoder = $this->container->get('security.password_encoder');
+        /*$encoder = $this->container->get('security.password_encoder');
 
         for ($i = 0; $i < 10; $i++) {
             $userAdmin = new User();
@@ -41,6 +41,6 @@ class Fixtures extends Fixture implements ContainerAwareInterface
             $manager->persist($userAdmin);
         }
 
-        $manager->flush();
+        $manager->flush();*/
     }
 }

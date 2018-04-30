@@ -61,6 +61,17 @@ class UserLesson
      */
     private $lesson;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="favorite", type="boolean", nullable=false)
+     */
+    private $favorite;
+
+    public function __construct (){
+        $this->favorite = 0;
+    }
+
 
     /**
      * Get id
@@ -214,5 +225,29 @@ class UserLesson
     public function getLesson()
     {
         return $this->lesson;
+    }
+
+    /**
+     * Set favorite
+     *
+     * @param boolean $favorite
+     *
+     * @return UserLesson
+     */
+    public function setFavorite($favorite)
+    {
+        $this->favorite = $favorite;
+
+        return $this;
+    }
+
+    /**
+     * Get favorite
+     *
+     * @return boolean
+     */
+    public function getFavorite()
+    {
+        return $this->favorite;
     }
 }

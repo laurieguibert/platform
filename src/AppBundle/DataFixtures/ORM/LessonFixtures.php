@@ -9,6 +9,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Lesson;
+use AppBundle\Entity\UserLesson;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -29,7 +30,7 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             $lesson->setLessonType($this->getReference('lessonType'.$i));
             $lesson->setLevel($this->getReference('level'.$i));
             $lesson->setSector($this->getReference('sector'.$i));
-            $lesson->addUser($this->getReference('user'.$i));
+            $lesson->addUserLesson(null);
             $manager->persist($lesson);
         }
 
@@ -43,7 +44,8 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             SectorFixtures::class,
             LevelFixtures::class,
             DurationTypeFixtures::class,
-            UserFixtures::class
+            UserFixtures::class,
+            UserLesson::class
         );
     }
 }

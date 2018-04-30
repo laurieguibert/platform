@@ -19,11 +19,11 @@ class UserType extends AbstractType
             ->add('username', TextType::class, array(
                 'description' => 'Name of the user',
             ))
-            ->add('password', TextType::class, array(
-                'description' => 'Password of the user',
-            ))
             ->add('email', EmailType::class, array(
                 'description' => 'Email of the user',
+            ))
+            ->add('password', TextType::class, array(
+                'description' => 'Password of the user',
             ));
     }
     

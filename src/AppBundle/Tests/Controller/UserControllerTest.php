@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
 {
-    public function testShowUSer()
+    public function testShowUsers()
     {
         $client = static::createClient();
 
@@ -18,7 +18,7 @@ class UserControllerTest extends WebTestCase
                 'Content-Type',
                 'application/json'
             ),
-            'the "Content-Type" header is "application/json"'
+            'The "Content-Type" header is "application/json"'
         );
 
         $this->assertContains('users', $crawler);

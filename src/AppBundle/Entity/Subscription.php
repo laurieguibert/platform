@@ -125,4 +125,3 @@ class Subscription
         return $this->nbMaxLesson;
     }
 }
-

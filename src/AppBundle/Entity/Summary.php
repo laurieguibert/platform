@@ -94,4 +94,3 @@ class Summary
         return $this->content;
     }
 }
-

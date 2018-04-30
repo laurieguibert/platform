@@ -63,4 +63,3 @@ class UserLessonStatus
         return $this->name;
     }
 }
-

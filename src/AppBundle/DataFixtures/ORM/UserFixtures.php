@@ -37,6 +37,10 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $user->setPassword($password);
             $user->setEmail('user' .$i . '@gmail.com');
             $user->setRoles(array('ROLE_USER'));
+            $user->setLastLogin(null);
+            $user->setSituation(null);
+            $user->setImage(null);
+            $user->setImageFile(null);
             $manager->persist($user);
             $this->addReference('user'.$i, $user);
         }
@@ -48,8 +52,27 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userAdmin->setPassword($password);
             $userAdmin->setEmail('user' .$i . '@gmail.com');
             $userAdmin->setRoles(array('ROLE_ADMIN'));
+            $userAdmin->setLastLogin(null);
+            $userAdmin->setSituation(null);
+            $userAdmin->setImage(null);
+            $userAdmin->setImageFile(null);
             $manager->persist($userAdmin);
             $this->addReference('userAdmin'.$i, $userAdmin);
+        }
+
+        for ($i = 11; $i < 15; $i++) {
+            $userFormer = new User();
+            $userFormer->setUsername('user'.$i);
+            $password = $encoder->encodePassword($userFormer, 'user'.$i);
+            $userFormer->setPassword($password);
+            $userFormer->setEmail('user' .$i . '@gmail.com');
+            $userFormer->setRoles(array('ROLE_FORMER'));
+            $userFormer->setLastLogin(null);
+            $userFormer->setSituation(null);
+            $userFormer->setImage(null);
+            $userFormer->setImageFile(null);
+            $manager->persist($userFormer);
+            $this->addReference('userFormer'.$i, $userFormer);
         }
 
         $manager->flush();

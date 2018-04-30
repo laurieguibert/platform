@@ -45,5 +45,7 @@ security:
         - { path: ^/user/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
     role_hierarchy:
-        ROLE_ADMIN: ROLE_USER
+        ROLE_ADMIN: ROLE_FORMER
+        ROLE_FORMER: ROLE_USER
+
 

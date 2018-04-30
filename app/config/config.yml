@@ -7,6 +7,10 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    app.path.lesson_images: /uploads/images/lessons
+    app.path.user_images: /uploads/images/users
+    app.path.cv_files: /uploads/files/users/cv
+
 
 framework:
     #esi: ~
@@ -71,6 +75,19 @@ swiftmailer:
     spool: { type: memory }
 
 nelmio_api_doc: ~
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+        lesson_images:
+            uri_prefix:         '%app.path.lesson_images%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/images/lessons'
+        user_images:
+            uri_prefix:         '%app.path.user_images%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/images/users'
+        cv_files:
+                    uri_prefix:         '%app.path.cv_files%'
+                    upload_destination: '%kernel.root_dir%/../web/uploads/files/users/cv'
 
 jms_payment_core:
     encryption:

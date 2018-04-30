@@ -2,11 +2,12 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * User
  *
@@ -14,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity("email", message="This email is already used.")
  * @UniqueEntity("username", message="This username is already used.")
+ * @Vich\Uploadable
  *
  */
 class User implements UserInterface
@@ -53,6 +55,20 @@ class User implements UserInterface
     private $email;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=1000, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="linkedin", type="string", length=50, nullable=true)
+     */
+    private $linkedin;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean")
@@ -67,18 +83,55 @@ class User implements UserInterface
     private $roles;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTime $createdAt
      *
      * @ORM\Column(type="datetime")
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime $updated
+     * @var \DateTime $updatedAt
      *
      * @ORM\Column(type="datetime", nullable = true)
      */
     protected $updatedAt;
+
+    /**
+     * @var \DateTime $lastLogin
+     *
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    protected $lastLogin;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Situation")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $situation;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
+    private $image;
+
+    /**
+     * @Vich\UploadableField(mapping="user_images", fileNameProperty="image")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
+    private $cvName;
+
+    /**
+     * @Vich\UploadableField(mapping="cv_files", fileNameProperty="cvName")
+     * @var File
+     */
+    private $cvFile;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="user", cascade={"persist"})
@@ -90,6 +143,8 @@ class User implements UserInterface
         $this->status = 1;
         $this->createdAt = new \DateTime("now");
         $this->updatedAt = null;
+        $this->description = null;
+        $this->linkedin = null;
     }
 
     /**
@@ -290,6 +345,29 @@ class User implements UserInterface
         $this->setUpdatedAt(new \Datetime());
     }
 
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
     /**
      * Add userLesson
      *
@@ -322,5 +400,125 @@ class User implements UserInterface
     public function getUserLesson()
     {
         return $this->userLesson;
+    }
+
+    /**
+     * Set lastLogin
+     *
+     * @param \DateTime $lastLogin
+     *
+     * @return User
+     */
+    public function setLastLogin($lastLogin)
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    /**
+     * Get lastLogin
+     *
+     * @return \DateTime
+     */
+    public function getLastLogin()
+    {
+        return $this->lastLogin;
+    }
+
+    /**
+     * Set situation
+     *
+     * @param \AppBundle\Entity\Situation $situation
+     *
+     * @return User
+     */
+    public function setSituation(\AppBundle\Entity\Situation $situation)
+    {
+        $this->situation = $situation;
+
+        return $this;
+    }
+
+    /**
+     * Get situation
+     *
+     * @return \AppBundle\Entity\Situation
+     */
+    public function getSituation()
+    {
+        return $this->situation;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return User
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set linkedin
+     *
+     * @param string $linkedin
+     *
+     * @return User
+     */
+    public function setLinkedin($linkedin)
+    {
+        $this->linkedin = $linkedin;
+
+        return $this;
+    }
+
+    /**
+     * Get linkedin
+     *
+     * @return string
+     */
+    public function getLinkedin()
+    {
+        return $this->linkedin;
+    }
+
+    /**
+     * Set cvName
+     *
+     * @param string $cvName
+     *
+     * @return User
+     */
+    public function setCvName($cvName)
+    {
+        $this->cvName = $cvName;
+
+        return $this;
+    }
+
+    /**
+     * Get cvName
+     *
+     * @return string
+     */
+    public function getCvName()
+    {
+        return $this->cvName;
     }
 }

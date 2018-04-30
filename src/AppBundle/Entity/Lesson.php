@@ -2,9 +2,10 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Lesson
@@ -12,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="lesson")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\LessonRepository")
  * @ORM\HasLifecycleCallbacks
+ * @Vich\Uploadable
  */
 class Lesson
 {
@@ -101,23 +103,48 @@ class Lesson
     private $level;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Summary")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $summary;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="tags", type="array", length=255)
+     */
+    private $tags;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
     private $created_at;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $updated_at;
+    
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="lesson", cascade={"persist"})
      */
     private $userLesson;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
+    private $image;
+
+    /**
+     * @Vich\UploadableField(mapping="lesson_images", fileNameProperty="image")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @var \DateTime
+     */
+    private $updatedAt;
 
     public function __construct()
     {
@@ -373,7 +400,7 @@ class Lesson
      */
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -416,5 +443,76 @@ class Lesson
     public function getUserLesson()
     {
         return $this->userLesson;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set summary
+     *
+     * @param \AppBundle\Entity\Summary $summary
+     *
+     * @return Lesson
+     */
+    public function setSummary(\AppBundle\Entity\Summary $summary)
+    {
+        $this->summary = $summary;
+
+        return $this;
+    }
+
+    /**
+     * Get summary
+     *
+     * @return \AppBundle\Entity\Summary
+     */
+    public function getSummary()
+    {
+        return $this->summary;
+    }
+
+    /**
+     * Set tags
+     *
+     * @param array $tags
+     *
+     * @return Lesson
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Get tags
+     *
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 }

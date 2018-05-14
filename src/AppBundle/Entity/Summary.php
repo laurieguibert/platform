@@ -35,6 +35,12 @@ class Summary
      */
     private $content;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SummaryStatus")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
+
 
     /**
      * Get id
@@ -92,5 +98,29 @@ class Summary
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * Set status
+     *
+     * @param \AppBundle\Entity\SummaryStatus $status
+     *
+     * @return Summary
+     */
+    public function setStatus(\AppBundle\Entity\SummaryStatus $status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return \AppBundle\Entity\SummaryStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

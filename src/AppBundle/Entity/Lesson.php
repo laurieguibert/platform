@@ -121,7 +121,6 @@ class Lesson
      * @ORM\Column(type="datetime")
      */
     private $created_at;
-    
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="lesson", cascade={"persist"})

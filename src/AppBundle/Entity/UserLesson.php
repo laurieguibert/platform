@@ -62,6 +62,12 @@ class UserLesson
     private $lesson;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserLessonStatus")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="favorite", type="boolean", nullable=false)
@@ -249,5 +255,29 @@ class UserLesson
     public function getFavorite()
     {
         return $this->favorite;
+    }
+
+    /**
+     * Set status
+     *
+     * @param \AppBundle\Entity\UserLessonStatus $status
+     *
+     * @return UserLesson
+     */
+    public function setStatus(\AppBundle\Entity\UserLessonStatus $status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return \AppBundle\Entity\UserLessonStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

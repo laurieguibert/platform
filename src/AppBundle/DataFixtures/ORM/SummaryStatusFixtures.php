@@ -13,7 +13,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class SummaryStatusFixtures extends Fixture implements DependentFixtureInterface
+class SummaryStatusFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {

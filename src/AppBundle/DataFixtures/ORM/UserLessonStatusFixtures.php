@@ -8,7 +8,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class UserLessonStatusFixtures extends Fixture implements DependentFixtureInterface
+class UserLessonStatusFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {

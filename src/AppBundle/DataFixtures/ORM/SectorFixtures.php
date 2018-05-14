@@ -26,7 +26,7 @@ class SectorFixtures extends Fixture
             $sector->setParentSector(null);
             $manager->persist($sector);
             $this->addReference('sector'.$i, $sector);
-            $i ++;
+            $i++;
         }
 
         $manager->flush();

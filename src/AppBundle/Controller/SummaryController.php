@@ -5,7 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Summary;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Summary controller.
@@ -26,9 +29,14 @@ class SummaryController extends Controller
 
         $summaries = $em->getRepository('AppBundle:Summary')->findAll();
 
-        return $this->render('summary/index.html.twig', array(
-            'summaries' => $summaries,
-        ));
+        if(empty($summaries)){
+            return new Response("No summary registered !", 404);
+        } else {
+            $data = $this->get('serializer')->normalize([
+                'summaries' => $summaries
+            ]);
+            return new JsonResponse($data, 200);
+        }
     }
 
     /**
@@ -41,20 +49,21 @@ class SummaryController extends Controller
     {
         $summary = new Summary();
         $form = $this->createForm('AppBundle\Form\SummaryType', $summary);
-        $form->handleRequest($request);
+        $form->submit(json_decode($request->getContent(), true));
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($summary);
             $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($summary), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($form);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
 
-            return $this->redirectToRoute('summary_show', array('id' => $summary->getId()));
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('summary/new.html.twig', array(
-            'summary' => $summary,
-            'form' => $form->createView(),
-        ));
     }
 
     /**
@@ -63,14 +72,17 @@ class SummaryController extends Controller
      * @Route("/{id}", name="summary_show")
      * @Method("GET")
      */
-    public function showAction(Summary $summary)
+    public function showAction($id)
     {
-        $deleteForm = $this->createDeleteForm($summary);
+        $summary = $this->getDoctrine()->getRepository('AppBundle:Summary')->findOneById($id);
+        if ($summary === null) {
+            return new Response("Summary not found", 404);
+        }
+        $data = $this->get('serializer')->normalize([
+            'summary' => $summary
+        ]);
 
-        return $this->render('summary/show.html.twig', array(
-            'summary' => $summary,
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return new JsonResponse($data, 200);
     }
 
     /**
@@ -81,21 +93,21 @@ class SummaryController extends Controller
      */
     public function editAction(Request $request, Summary $summary)
     {
-        $deleteForm = $this->createDeleteForm($summary);
         $editForm = $this->createForm('AppBundle\Form\SummaryType', $summary);
-        $editForm->handleRequest($request);
+        $editForm->submit(json_decode($request->getContent(), true));
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('summary_edit', array('id' => $summary->getId()));
+        if($editForm->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($summary);
+            $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($summary), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($editForm);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('summary/edit.html.twig', array(
-            'summary' => $summary,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
     }
 
     /**
@@ -104,33 +116,19 @@ class SummaryController extends Controller
      * @Route("/{id}", name="summary_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Summary $summary)
+    public function deleteAction(Request $request)
     {
-        $form = $this->createDeleteForm($summary);
-        $form->handleRequest($request);
+        $em = $this->get('doctrine.orm.entity_manager');
+        $summary = $em->getRepository('AppBundle:Summary')
+            ->find($request->get('id'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        if ($summary) {
             $em->remove($summary);
             $em->flush();
+
+            return new Response("Summary " . $request->get('id') . " was deleted !", 200 );
+        } else {
+            return new Response("Summary " . $request->get('id') . " doesn't exist !", 404);
         }
-
-        return $this->redirectToRoute('summary_index');
-    }
-
-    /**
-     * Creates a form to delete a summary entity.
-     *
-     * @param Summary $summary The summary entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Summary $summary)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('summary_delete', array('id' => $summary->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }

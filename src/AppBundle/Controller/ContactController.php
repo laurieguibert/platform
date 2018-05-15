@@ -5,7 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Contact;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Contact controller.
@@ -26,9 +29,14 @@ class ContactController extends Controller
 
         $contacts = $em->getRepository('AppBundle:Contact')->findAll();
 
-        return $this->render('contact/index.html.twig', array(
-            'contacts' => $contacts,
-        ));
+        if(empty($contacts)){
+            return new Response("No contact registered !", 404);
+        } else {
+            $data = $this->get('serializer')->normalize([
+                'levels' => $contacts
+            ]);
+            return new JsonResponse($data, 200);
+        }
     }
 
     /**
@@ -41,20 +49,21 @@ class ContactController extends Controller
     {
         $contact = new Contact();
         $form = $this->createForm('AppBundle\Form\ContactType', $contact);
-        $form->handleRequest($request);
+        $form->submit(json_decode($request->getContent(), true));
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($contact);
             $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($contact), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($form);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
 
-            return $this->redirectToRoute('contact_show', array('id' => $contact->getId()));
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('contact/new.html.twig', array(
-            'contact' => $contact,
-            'form' => $form->createView(),
-        ));
     }
 
     /**
@@ -63,14 +72,18 @@ class ContactController extends Controller
      * @Route("/{id}", name="contact_show")
      * @Method("GET")
      */
-    public function showAction(Contact $contact)
+    public function showAction($id)
     {
-        $deleteForm = $this->createDeleteForm($contact);
+        $contact = $this->getDoctrine()->getRepository('AppBundle:Contact')->findOneById($id);
+        if ($contact === null) {
+            return new Response("Contact with id " . $id . " doesn't exist", 404);
+        }
 
-        return $this->render('contact/show.html.twig', array(
-            'contact' => $contact,
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $data = $this->get('serializer')->normalize([
+            'contact' => $contact
+        ]);
+
+        return new JsonResponse($data, 200);
     }
 
     /**
@@ -81,21 +94,21 @@ class ContactController extends Controller
      */
     public function editAction(Request $request, Contact $contact)
     {
-        $deleteForm = $this->createDeleteForm($contact);
         $editForm = $this->createForm('AppBundle\Form\ContactType', $contact);
-        $editForm->handleRequest($request);
+        $editForm->submit(json_decode($request->getContent(), true));
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('contact_edit', array('id' => $contact->getId()));
+        if($editForm->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($contact);
+            $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($contact), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($editForm);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('contact/edit.html.twig', array(
-            'contact' => $contact,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
     }
 
     /**
@@ -106,31 +119,17 @@ class ContactController extends Controller
      */
     public function deleteAction(Request $request, Contact $contact)
     {
-        $form = $this->createDeleteForm($contact);
-        $form->handleRequest($request);
+        $em = $this->get('doctrine.orm.entity_manager');
+        $contact = $em->getRepository('AppBundle:Contact')
+            ->find($request->get('id'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        if ($contact) {
             $em->remove($contact);
             $em->flush();
+
+            return new Response("Contact " . $request->get('id') . " was deleted !", 200);
+        } else {
+            return new Response("Contact " . $request->get('id') . " not found !", 404);
         }
-
-        return $this->redirectToRoute('contact_index');
-    }
-
-    /**
-     * Creates a form to delete a contact entity.
-     *
-     * @param Contact $contact The contact entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Contact $contact)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('contact_delete', array('id' => $contact->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }

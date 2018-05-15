@@ -5,7 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ContactType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Contacttype controller.
@@ -26,9 +29,14 @@ class ContactTypeController extends Controller
 
         $contactTypes = $em->getRepository('AppBundle:ContactType')->findAll();
 
-        return $this->render('contacttype/index.html.twig', array(
-            'contactTypes' => $contactTypes,
-        ));
+        if(empty($contactTypes)){
+            return new Response("No contact type registered !", 404);
+        } else {
+            $data = $this->get('serializer')->normalize([
+                'contactTypes' => $contactTypes
+            ]);
+            return new JsonResponse($data, 200);
+        }
     }
 
     /**
@@ -41,20 +49,21 @@ class ContactTypeController extends Controller
     {
         $contactType = new Contacttype();
         $form = $this->createForm('AppBundle\Form\ContactTypeType', $contactType);
-        $form->handleRequest($request);
+        $form->submit(json_decode($request->getContent(), true));
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($contactType);
             $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($contactType), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($form);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
 
-            return $this->redirectToRoute('contacttype_show', array('id' => $contactType->getId()));
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('contacttype/new.html.twig', array(
-            'contactType' => $contactType,
-            'form' => $form->createView(),
-        ));
     }
 
     /**
@@ -63,14 +72,18 @@ class ContactTypeController extends Controller
      * @Route("/{id}", name="contacttype_show")
      * @Method("GET")
      */
-    public function showAction(ContactType $contactType)
+    public function showAction($id)
     {
-        $deleteForm = $this->createDeleteForm($contactType);
+        $contactType = $this->getDoctrine()->getRepository('AppBundle:ContactType')->findOneById($id);
+        if ($contactType === null) {
+            return new Response("Contact type with id " . $id . " doesn't exist", 404);
+        }
 
-        return $this->render('contacttype/show.html.twig', array(
-            'contactType' => $contactType,
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $data = $this->get('serializer')->normalize([
+            'contactType' => $contactType
+        ]);
+
+        return new JsonResponse($data, 200);
     }
 
     /**
@@ -81,21 +94,21 @@ class ContactTypeController extends Controller
      */
     public function editAction(Request $request, ContactType $contactType)
     {
-        $deleteForm = $this->createDeleteForm($contactType);
         $editForm = $this->createForm('AppBundle\Form\ContactTypeType', $contactType);
-        $editForm->handleRequest($request);
+        $editForm->submit(json_decode($request->getContent(), true));
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('contacttype_edit', array('id' => $contactType->getId()));
+        if($editForm->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($contactType);
+            $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($contactType), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($editForm);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('contacttype/edit.html.twig', array(
-            'contactType' => $contactType,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
     }
 
     /**
@@ -104,33 +117,19 @@ class ContactTypeController extends Controller
      * @Route("/{id}", name="contacttype_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, ContactType $contactType)
+    public function deleteAction(Request $request)
     {
-        $form = $this->createDeleteForm($contactType);
-        $form->handleRequest($request);
+        $em = $this->get('doctrine.orm.entity_manager');
+        $contactType = $em->getRepository('AppBundle:ContactType')
+            ->find($request->get('id'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        if ($contactType) {
             $em->remove($contactType);
             $em->flush();
+
+            return new Response("Contact type " . $request->get('id') . " was deleted !", 200);
+        } else {
+            return new Response("Contact type " . $request->get('id') . " not found !", 404);
         }
-
-        return $this->redirectToRoute('contacttype_index');
-    }
-
-    /**
-     * Creates a form to delete a contactType entity.
-     *
-     * @param ContactType $contactType The contactType entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(ContactType $contactType)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('contacttype_delete', array('id' => $contactType->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }

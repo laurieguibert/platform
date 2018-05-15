@@ -5,7 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Situation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Situation controller.
@@ -26,9 +29,14 @@ class SituationController extends Controller
 
         $situations = $em->getRepository('AppBundle:Situation')->findAll();
 
-        return $this->render('situation/index.html.twig', array(
-            'situations' => $situations,
-        ));
+        if(empty($situations)){
+            return new Response("No situation registered !", 404);
+        } else {
+            $data = $this->get('serializer')->normalize([
+                'situations' => $situations
+            ]);
+            return new JsonResponse($data, 200);
+        }
     }
 
     /**
@@ -41,20 +49,21 @@ class SituationController extends Controller
     {
         $situation = new Situation();
         $form = $this->createForm('AppBundle\Form\SituationType', $situation);
-        $form->handleRequest($request);
+        $form->submit(json_decode($request->getContent(), true));
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($situation);
             $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($situation), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($form);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
 
-            return $this->redirectToRoute('situation_show', array('id' => $situation->getId()));
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('situation/new.html.twig', array(
-            'situation' => $situation,
-            'form' => $form->createView(),
-        ));
     }
 
     /**
@@ -63,14 +72,17 @@ class SituationController extends Controller
      * @Route("/{id}", name="situation_show")
      * @Method("GET")
      */
-    public function showAction(Situation $situation)
+    public function showAction($id)
     {
-        $deleteForm = $this->createDeleteForm($situation);
+        $situation = $this->getDoctrine()->getRepository('AppBundle:Situation')->findOneById($id);
+        if ($situation === null) {
+            return new Response("Situation not found", 404);
+        }
+        $data = $this->get('serializer')->normalize([
+            'situation' => $situation
+        ]);
 
-        return $this->render('situation/show.html.twig', array(
-            'situation' => $situation,
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return new JsonResponse($data, 200);
     }
 
     /**
@@ -81,21 +93,21 @@ class SituationController extends Controller
      */
     public function editAction(Request $request, Situation $situation)
     {
-        $deleteForm = $this->createDeleteForm($situation);
         $editForm = $this->createForm('AppBundle\Form\SituationType', $situation);
-        $editForm->handleRequest($request);
+        $editForm->submit(json_decode($request->getContent(), true));
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('situation_edit', array('id' => $situation->getId()));
+        if($editForm->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($situation);
+            $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($situation), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($editForm);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('situation/edit.html.twig', array(
-            'situation' => $situation,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
     }
 
     /**
@@ -104,33 +116,19 @@ class SituationController extends Controller
      * @Route("/{id}", name="situation_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Situation $situation)
+    public function deleteAction(Request $request)
     {
-        $form = $this->createDeleteForm($situation);
-        $form->handleRequest($request);
+        $em = $this->get('doctrine.orm.entity_manager');
+        $situation = $em->getRepository('AppBundle:Situation')
+            ->find($request->get('id'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        if ($situation) {
             $em->remove($situation);
             $em->flush();
+
+            return new Response("Situation " . $request->get('id') . " was deleted !", 200 );
+        } else {
+            return new Response("Situation " . $request->get('id') . " doesn't exist !", 404);
         }
-
-        return $this->redirectToRoute('situation_index');
-    }
-
-    /**
-     * Creates a form to delete a situation entity.
-     *
-     * @param Situation $situation The situation entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Situation $situation)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('situation_delete', array('id' => $situation->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }

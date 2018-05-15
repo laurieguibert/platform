@@ -5,7 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\UserLessonStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Userlessonstatus controller.
@@ -24,11 +27,16 @@ class UserLessonStatusController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $userLessonStatuses = $em->getRepository('AppBundle:UserLessonStatus')->findAll();
+        $userLessonStatus = $em->getRepository('AppBundle:UserLessonStatus')->findAll();
 
-        return $this->render('userlessonstatus/index.html.twig', array(
-            'userLessonStatuses' => $userLessonStatuses,
-        ));
+        if(empty($userLessonStatus)){
+            return new Response("No user lesson status registered !", 404);
+        } else {
+            $data = $this->get('serializer')->normalize([
+                'userLessonStatus' => $userLessonStatus
+            ]);
+            return new JsonResponse($data, 200);
+        }
     }
 
     /**
@@ -41,20 +49,21 @@ class UserLessonStatusController extends Controller
     {
         $userLessonStatus = new Userlessonstatus();
         $form = $this->createForm('AppBundle\Form\UserLessonStatusType', $userLessonStatus);
-        $form->handleRequest($request);
+        $form->submit(json_decode($request->getContent(), true));
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($userLessonStatus);
             $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($userLessonStatus), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($form);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
 
-            return $this->redirectToRoute('userlessonstatus_show', array('id' => $userLessonStatus->getId()));
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('userlessonstatus/new.html.twig', array(
-            'userLessonStatus' => $userLessonStatus,
-            'form' => $form->createView(),
-        ));
     }
 
     /**
@@ -63,14 +72,18 @@ class UserLessonStatusController extends Controller
      * @Route("/{id}", name="userlessonstatus_show")
      * @Method("GET")
      */
-    public function showAction(UserLessonStatus $userLessonStatus)
+    public function showAction($id)
     {
-        $deleteForm = $this->createDeleteForm($userLessonStatus);
+        $userLessonStatus = $this->getDoctrine()->getRepository('AppBundle:UserLessonStatus')->findOneById($id);
+        if ($userLessonStatus === null) {
+            return new Response("User lesson status with id " . $id . " doesn't exist", 404);
+        }
 
-        return $this->render('userlessonstatus/show.html.twig', array(
-            'userLessonStatus' => $userLessonStatus,
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $data = $this->get('serializer')->normalize([
+            'userLessonStatus' => $userLessonStatus
+        ]);
+
+        return new JsonResponse($data, 200);
     }
 
     /**
@@ -81,21 +94,21 @@ class UserLessonStatusController extends Controller
      */
     public function editAction(Request $request, UserLessonStatus $userLessonStatus)
     {
-        $deleteForm = $this->createDeleteForm($userLessonStatus);
         $editForm = $this->createForm('AppBundle\Form\UserLessonStatusType', $userLessonStatus);
-        $editForm->handleRequest($request);
+        $editForm->submit(json_decode($request->getContent(), true));
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('userlessonstatus_edit', array('id' => $userLessonStatus->getId()));
+        if($editForm->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($userLessonStatus);
+            $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($userLessonStatus), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($editForm);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
+            return new JsonResponse($data, 400);
         }
-
-        return $this->render('userlessonstatus/edit.html.twig', array(
-            'userLessonStatus' => $userLessonStatus,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
     }
 
     /**
@@ -104,33 +117,19 @@ class UserLessonStatusController extends Controller
      * @Route("/{id}", name="userlessonstatus_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, UserLessonStatus $userLessonStatus)
+    public function deleteAction(Request $request)
     {
-        $form = $this->createDeleteForm($userLessonStatus);
-        $form->handleRequest($request);
+        $em = $this->get('doctrine.orm.entity_manager');
+        $userLessonStatus = $em->getRepository('AppBundle:UserLessonStatus')
+            ->find($request->get('id'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+        if ($userLessonStatus) {
             $em->remove($userLessonStatus);
             $em->flush();
+
+            return new Response("User lesson status type " . $request->get('id') . " was deleted !", 200);
+        } else {
+            return new Response("User lesson status type " . $request->get('id') . " not found !", 404);
         }
-
-        return $this->redirectToRoute('userlessonstatus_index');
-    }
-
-    /**
-     * Creates a form to delete a userLessonStatus entity.
-     *
-     * @param UserLessonStatus $userLessonStatus The userLessonStatus entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(UserLessonStatus $userLessonStatus)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('userlessonstatus_delete', array('id' => $userLessonStatus->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }

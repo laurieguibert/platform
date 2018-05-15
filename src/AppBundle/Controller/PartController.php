@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\SummaryStatus;
+use AppBundle\Entity\Part;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -11,51 +11,51 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Summarystatus controller.
+ * Part controller.
  *
- * @Route("summarystatus")
+ * @Route("part")
  */
-class SummaryStatusController extends Controller
+class PartController extends Controller
 {
     /**
-     * Lists all summaryStatus entities.
+     * Lists all part entities.
      *
-     * @Route("/", name="summarystatus_index")
+     * @Route("/", name="part_index")
      * @Method("GET")
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
-        $summaryStatuses = $em->getRepository('AppBundle:SummaryStatus')->findAll();
+        $parts = $em->getRepository('AppBundle:Part')->findAll();
 
-        if(empty($summaryStatuses)){
-            return new Response("No summary status registered !", 404);
+        if(empty($parts)){
+            return new Response("No parts registered !", 404);
         } else {
             $data = $this->get('serializer')->normalize([
-                'summaryStatuses' => $summaryStatuses
+                'parts' => $parts
             ]);
             return new JsonResponse($data, 200);
         }
     }
 
     /**
-     * Creates a new summaryStatus entity.
+     * Creates a new part entity.
      *
-     * @Route("/new", name="summarystatus_new")
+     * @Route("/new", name="part_new")
      * @Method({"GET", "POST"})
      */
     public function newAction(Request $request)
     {
-        $summaryStatus = new Summarystatus();
-        $form = $this->createForm('AppBundle\Form\SummaryStatusType', $summaryStatus);
+        $part = new Part();
+        $form = $this->createForm('AppBundle\Form\PartType', $part);
         $form->submit(json_decode($request->getContent(), true));
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($summaryStatus);
+            $em->persist($part);
             $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($summaryStatus), 200);
+            return new JsonResponse($this->get('serializer')->normalize($part), 200);
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($form);
@@ -67,40 +67,41 @@ class SummaryStatusController extends Controller
     }
 
     /**
-     * Finds and displays a summaryStatus entity.
+     * Finds and displays a part entity.
      *
-     * @Route("/{id}", name="summarystatus_show")
+     * @Route("/{id}", name="part_show")
      * @Method("GET")
      */
     public function showAction($id)
     {
-        $summaryStatus = $this->getDoctrine()->getRepository('AppBundle:SummaryStatus')->findOneById($id);
-        if ($summaryStatus === null) {
-            return new Response("Summary status not found", 404);
+        $part = $this->getDoctrine()->getRepository('AppBundle:Part')->findOneById($id);
+        if ($part === null) {
+            return new Response("Part with id " . $id . " doesn't exist", 404);
         }
+
         $data = $this->get('serializer')->normalize([
-            'summaryStatus' => $summaryStatus
+            'part' => $part
         ]);
 
         return new JsonResponse($data, 200);
     }
 
     /**
-     * Displays a form to edit an existing summaryStatus entity.
+     * Displays a form to edit an existing part entity.
      *
-     * @Route("/{id}/edit", name="summarystatus_edit")
+     * @Route("/{id}/edit", name="part_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, SummaryStatus $summaryStatus)
+    public function editAction(Request $request, Part $part)
     {
-        $editForm = $this->createForm('AppBundle\Form\SummaryStatusType', $summaryStatus);
+        $editForm = $this->createForm('AppBundle\Form\PartType', $part);
         $editForm->submit(json_decode($request->getContent(), true));
 
         if($editForm->isValid()){
             $em = $this->getDoctrine()->getManager();
-            $em->persist($summaryStatus);
+            $em->persist($part);
             $em->flush();
-            return new JsonResponse($this->get('serializer')->normalize($summaryStatus), 200);
+            return new JsonResponse($this->get('serializer')->normalize($part), 200);
         } else {
             $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
             $errors = $formErrorsRecuperator->getFormErrors($editForm);
@@ -111,24 +112,24 @@ class SummaryStatusController extends Controller
     }
 
     /**
-     * Deletes a summaryStatus entity.
+     * Deletes a part entity.
      *
-     * @Route("/{id}", name="summarystatus_delete")
+     * @Route("/{id}", name="part_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request, Part $part)
     {
         $em = $this->get('doctrine.orm.entity_manager');
-        $summaryStatus = $em->getRepository('AppBundle:SummaryStatus')
+        $part = $em->getRepository('AppBundle:Part')
             ->find($request->get('id'));
 
-        if ($summaryStatus) {
-            $em->remove($summaryStatus);
+        if ($part) {
+            $em->remove($part);
             $em->flush();
 
-            return new Response("Summary status " . $request->get('id') . " was deleted !", 200 );
+            return new Response("Part " . $request->get('id') . " was deleted !", 200);
         } else {
-            return new Response("Summary status " . $request->get('id') . " doesn't exist !", 404);
+            return new Response("Part " . $request->get('id') . " not found !", 404);
         }
     }
 }

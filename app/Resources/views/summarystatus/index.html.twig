@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Summarystatuses list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for summaryStatus in summaryStatuses %}
+            <tr>
+                <td><a href="{{ path('summarystatus_show', { 'id': summaryStatus.id }) }}">{{ summaryStatus.id }}</a></td>
+                <td>{{ summaryStatus.name }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('summarystatus_show', { 'id': summaryStatus.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('summarystatus_edit', { 'id': summaryStatus.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('summarystatus_new') }}">Create a new summaryStatus</a>
+        </li>
+    </ul>
+{% endblock %}

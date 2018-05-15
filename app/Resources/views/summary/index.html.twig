@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Summaries list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for summary in summaries %}
+            <tr>
+                <td><a href="{{ path('summary_show', { 'id': summary.id }) }}">{{ summary.id }}</a></td>
+                <td>{{ summary.title }}</td>
+                <td>{{ summary.content }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('summary_show', { 'id': summary.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('summary_edit', { 'id': summary.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('summary_new') }}">Create a new summary</a>
+        </li>
+    </ul>
+{% endblock %}

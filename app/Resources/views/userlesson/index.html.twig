@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Userlessons list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Startedat</th>
+                <th>Endedat</th>
+                <th>Certificated</th>
+                <th>Certificateddate</th>
+                <th>Favorite</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for userLesson in userLessons %}
+            <tr>
+                <td><a href="{{ path('userlesson_show', { 'id': userLesson.id }) }}">{{ userLesson.id }}</a></td>
+                <td>{% if userLesson.startedAt %}{{ userLesson.startedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if userLesson.endedAt %}{{ userLesson.endedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if userLesson.certificated %}Yes{% else %}No{% endif %}</td>
+                <td>{% if userLesson.certificatedDate %}{{ userLesson.certificatedDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if userLesson.favorite %}Yes{% else %}No{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('userlesson_show', { 'id': userLesson.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('userlesson_edit', { 'id': userLesson.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('userlesson_new') }}">Create a new userLesson</a>
+        </li>
+    </ul>
+{% endblock %}

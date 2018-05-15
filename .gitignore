@@ -20,4 +20,3 @@
 **/.idea/tasks.xml
 **/.idea/*.iws
 docker/.data
-/app/Resources/views/*

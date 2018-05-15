@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Userlesson</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ userLesson.id }}</td>
+            </tr>
+            <tr>
+                <th>Startedat</th>
+                <td>{% if userLesson.startedAt %}{{ userLesson.startedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Endedat</th>
+                <td>{% if userLesson.endedAt %}{{ userLesson.endedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Certificated</th>
+                <td>{% if userLesson.certificated %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Certificateddate</th>
+                <td>{% if userLesson.certificatedDate %}{{ userLesson.certificatedDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Favorite</th>
+                <td>{% if userLesson.favorite %}Yes{% else %}No{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('userlesson_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('userlesson_edit', { 'id': userLesson.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

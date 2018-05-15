@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Situations list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for situation in situations %}
+            <tr>
+                <td><a href="{{ path('situation_show', { 'id': situation.id }) }}">{{ situation.id }}</a></td>
+                <td>{{ situation.name }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('situation_show', { 'id': situation.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('situation_edit', { 'id': situation.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('situation_new') }}">Create a new situation</a>
+        </li>
+    </ul>
+{% endblock %}

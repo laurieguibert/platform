@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Userlessonstatuses list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for userLessonStatus in userLessonStatuses %}
+            <tr>
+                <td><a href="{{ path('userlessonstatus_show', { 'id': userLessonStatus.id }) }}">{{ userLessonStatus.id }}</a></td>
+                <td>{{ userLessonStatus.name }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('userlessonstatus_show', { 'id': userLessonStatus.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('userlessonstatus_edit', { 'id': userLessonStatus.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('userlessonstatus_new') }}">Create a new userLessonStatus</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -29,16 +30,20 @@ class LessonType extends AbstractType
             ->add('certificate', CheckboxType::class, array(
                 'description' => 'Has lesson certification or not',
             ))
-            ->add('lesson_type', TextType::class, array(
+            ->add('lesson_type', EntityType::class, array(
+                'class'=>'AppBundle:LessonType',
                 'description' => 'Type of the lesson',
             ))
-            ->add('duration_type', TextType::class, array(
+            ->add('duration_type', EntityType::class, array(
+                'class'=>'AppBundle:DurationType',
                 'description' => 'Duration of the lesson',
             ))
-            ->add('sector', TextType::class, array(
+            ->add('sector', EntityType::class, array(
+                'class'=>'AppBundle:SectorType',
                 'description' => 'Sector concerned by the lesson',
             ))
-            ->add('level', TextType::class, array(
+            ->add('level', EntityType::class, array(
+                'class'=>'AppBundle:LevelType',
                 'description' => 'Level required for the lesson',
             ));
     }

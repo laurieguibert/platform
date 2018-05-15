@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,7 +14,14 @@ class SummaryType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title')->add('content');
+        $builder
+            ->add('title', TextType::class, array(
+                'description' => 'Title of summary',
+            ))
+            ->add('content', TextType::class, array(
+                'description' => 'Content of the summary',
+            ));
+
     }/**
      * {@inheritdoc}
      */

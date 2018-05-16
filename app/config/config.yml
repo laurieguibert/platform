@@ -116,6 +116,8 @@ assetic:
         lessphp:
             file: "%kernel.root_dir%/../vendor/oyejorge/less.php/lessc.inc.php"
             apply_to: ".less$"
+        scssphp:
+            formatter: 'Leafo\ScssPhp\Formatter\Compressed'
     assets:
         jquery_js:
             inputs:

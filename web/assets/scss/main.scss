@@ -1,5 +1,113 @@
-$primary-color: #333;
+$blue_grey: #657d95;
+$aqua: #00b1c3;
 
 body{
-  background-color: $primary-color !important;
+	font-family: Biryani;
+	font-weight: 300;
+	font-size: 12px;
+	color: $blue_grey;
 }
+
+h1 {
+	font-family: 'Fira Sans';
+	font-weight: 400;
+	font-size: 30px;
+	margin: 0;
+	padding: 0;
+	padding-bottom: 30px;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.transparent {
+	
+}
+
+.full-screen {
+	height: 100vh;
+	background-image: url('../../images/full_background.png');
+	background-size: cover; 
+	padding-top: 65vh; 
+}
+
+#main-header {
+	nav {
+		padding-top: 10px; 
+		ul {
+			li {
+				a {
+					font-family: Biryani;
+					font-weight: 700;
+					font-size: 12px;
+					text-transform: uppercase;
+					color: $blue_grey;
+					.glyphicon {
+						border: 1px solid $blue_grey;
+						display: block;
+						width: 20px;
+						height: 20px;
+						border-radius: 50%;
+					    text-align: center;
+					    padding: 5px 0;
+					    font-size: 10px;
+			    	    position: relative;
+    					top: -2px;
+					}
+				}
+			}
+		}
+	}
+	&.transparent {
+		nav {
+			background-color: transparent;
+			border: 0 solid transparent;
+			ul {
+				li {
+					a {
+						color: #fff; 
+						.glyphicon {
+							border-color: #fff;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.panel-default {
+	border-radius: 0;
+	&.panel-transparent {
+		background-color: rgba(255, 255, 255, .3); 
+		border: 0 solid transparent;
+	}	
+}
+
+.form-control {
+	border-radius: 0;
+	border: 1px solid #efefef;
+	font-weight: 700;
+	font-size: 10px;
+	color: $blue_grey;
+	padding-top: 9px;
+}
+
+.btn {
+	border-radius: 0;
+	&[type='submit'] {
+		background-color: $aqua;
+		border-color: $aqua;
+		color: #fff;
+		.glyphicon {
+			top: 3px;
+		}
+	}
+}
+
+
+
+
+
+
+
+

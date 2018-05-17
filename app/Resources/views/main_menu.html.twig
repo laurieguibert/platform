@@ -1,0 +1,57 @@
+<header id="main-header" class="transparent">
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-menu">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Brand</a>
+        </div>
+        <div class="collapse navbar-collapse" id="main-menu">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#">
+                accueil
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                les formations
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                devenir formateur
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                nous contacter
+              </a>
+            </li>
+            {% if app.user %}
+              <li>
+                <a href="#">
+                  mon compte
+                </a>
+              </li>
+            {% else %}
+              <li>
+                <a href="#">
+                  mon compte
+                </a>
+              </li>
+            {% endif %}
+            <li>
+              <a href="#">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+</header>

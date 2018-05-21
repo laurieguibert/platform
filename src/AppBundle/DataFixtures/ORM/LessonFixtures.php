@@ -32,8 +32,8 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             $lesson->setImage(null);
             $lesson->setSummary($this->getReference('summary'.$i));
             $lesson->setTags(array("SQL", "PHP"));
-            $lesson->addUserLesson(null);
             $manager->persist($lesson);
+            $this->addReference('lesson'.$i, $lesson);
         }
 
         $manager->flush();

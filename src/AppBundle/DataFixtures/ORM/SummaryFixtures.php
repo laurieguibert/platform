@@ -17,12 +17,13 @@ class SummaryFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $summary = new Summary();
             $summary->setTitle("Title" . $i);
             $summary->setContent("Content" . $i);
             $summary->setStatus($this->getReference('summaryStatus'.$i));
             $manager->persist($summary);
+            $this->addReference('summary'.$i, $summary);
         }
 
         $manager->flush();

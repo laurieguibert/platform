@@ -38,9 +38,10 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $user->setEmail('user' .$i . '@gmail.com');
             $user->setRoles(array('ROLE_USER'));
             $user->setLastLogin(null);
-            $user->setSituation(null);
+            $user->setSituation($this->getReference('situation1'));
             $user->setImage(null);
             $user->setImageFile(null);
+            $user->setCreatedAt(date_create(date("Y-m-d H:i:s")));
             $manager->persist($user);
             $this->addReference('user'.$i, $user);
         }
@@ -53,9 +54,10 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userAdmin->setEmail('user' .$i . '@gmail.com');
             $userAdmin->setRoles(array('ROLE_ADMIN'));
             $userAdmin->setLastLogin(null);
-            $userAdmin->setSituation(null);
+            $userAdmin->setSituation($this->getReference('situation2'));
             $userAdmin->setImage(null);
             $userAdmin->setImageFile(null);
+            $userAdmin->setCreatedAt(date_create(date("Y-m-d H:i:s")));
             $manager->persist($userAdmin);
             $this->addReference('userAdmin'.$i, $userAdmin);
         }
@@ -68,13 +70,21 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userFormer->setEmail('user' .$i . '@gmail.com');
             $userFormer->setRoles(array('ROLE_FORMER'));
             $userFormer->setLastLogin(null);
-            $userFormer->setSituation(null);
+            $userFormer->setSituation($this->getReference('situation3'));
             $userFormer->setImage(null);
             $userFormer->setImageFile(null);
+            $userFormer->setCreatedAt(date_create(date("Y-m-d H:i:s")));
             $manager->persist($userFormer);
             $this->addReference('userFormer'.$i, $userFormer);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return array(
+            SituationFixtures::class
+        );
     }
 }

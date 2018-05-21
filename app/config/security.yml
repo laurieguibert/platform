@@ -40,9 +40,9 @@ security:
         - { path: ^/lesson/sector/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/lesson/duration/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/lesson$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/user, roles: ROLE_USER }
-        - { path: ^/user/, roles: ROLE_ADMIN }
+        - { path: ^/user/, roles: ROLE_USER }
         - { path: ^/user/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/userlessonstatus, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_FORMER

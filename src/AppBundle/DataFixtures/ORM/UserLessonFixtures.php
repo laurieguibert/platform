@@ -28,6 +28,7 @@ class UserLessonFixtures extends Fixture implements DependentFixtureInterface
             $userLesson->setFavorite(0);
             $userLesson->setStatus($this->getReference('userLessonStatus1'));
             $manager->persist($userLesson);
+            $this->addReference('userLesson'.$i, $userLesson);
         }
 
         $manager->flush();
@@ -38,7 +39,8 @@ class UserLessonFixtures extends Fixture implements DependentFixtureInterface
         return array(
             LessonTypeFixtures::class,
             UserFixtures::class,
-            UserLessonStatusFixtures::class
+            UserLessonStatusFixtures::class,
+            LessonFixtures::class
         );
     }
 }

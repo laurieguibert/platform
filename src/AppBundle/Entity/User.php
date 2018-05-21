@@ -110,7 +110,7 @@ class User implements UserInterface
     private $situation;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @var string
      */
     private $image;
@@ -122,7 +122,7 @@ class User implements UserInterface
     private $imageFile;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @var string
      */
     private $cvName;
@@ -498,25 +498,24 @@ class User implements UserInterface
         return $this->linkedin;
     }
 
-    /**
-     * Set cvName
-     *
-     * @param string $cvName
-     *
-     * @return User
-     */
-    public function setCvName($cvName)
+    public function setCvFile(File $image = null)
     {
-        $this->cvName = $cvName;
-
-        return $this;
+        $this->cvFile = $image;
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
     }
 
-    /**
-     * Get cvName
-     *
-     * @return string
-     */
+    public function getCvFile()
+    {
+        return $this->cvFile;
+    }
+
+    public function setCvName($image)
+    {
+        $this->cvName = $image;
+    }
+
     public function getCvName()
     {
         return $this->cvName;

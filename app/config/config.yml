@@ -10,7 +10,8 @@ parameters:
     app.path.lesson_images: /uploads/images/lessons
     app.path.user_images: /uploads/images/users
     app.path.cv_files: /uploads/files/users/cv
-
+    assetic.filter.compass.images_dir: %kernel.root_dir%/../web/images
+    assetic.filter.compass.http_path:  /images
 
 framework:
     #esi: ~
@@ -76,6 +77,15 @@ swiftmailer:
 
 nelmio_api_doc: ~
 
+nelmio_cors:
+    paths:
+        '^/':
+            allow_origin: ['*']
+            allow_headers: ['*']
+            expose_headers: ['Authorization']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
+            max_age: 3600
+
 vich_uploader:
     db_driver: orm
     mappings:
@@ -106,6 +116,8 @@ assetic:
    #java: /usr/bin/java
     java: C:\Program Files\Java\jdk1.8.0_65\bin\java.exe
     filters:
+        sass:    ~
+        compass: ~
         cssrewrite: ~
         cssembed:
             jar: "%kernel.root_dir%/Resources/java/cssembed.jar"

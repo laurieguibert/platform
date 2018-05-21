@@ -3,17 +3,13 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}
-            {% stylesheets filter='scssphp' output='assets/css/compiled/app.css'
-                'assets/scss/main.scss'
-            %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-            {% endstylesheets %}
-        {% endblock %}
+        {% include 'stylesheets.html.twig' %}
+        <link href="https://fonts.googleapis.com/css?family=Biryani:300,400,700|Fira+Sans:300,400,700" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+      {% include 'main_menu.html.twig' %}
+      {% block body %}{% endblock %}
+      {% block javascripts %}{% endblock %}
     </body>
 </html>

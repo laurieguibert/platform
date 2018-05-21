@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<section class="full-screen">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="text-center">
+						trouvez la formation qui vous correspond
+					</h1>
+				</div>
+			</div>
+			<form class="panel panel-default panel-transparent">
+  				<div class="panel-body">
+  					<div class="row">
+  						<div class="col-md-4">
+  							<input type="text" name="keyword" placeholder="Secteur d’activité, compétence..." class="form-control">
+  						</div>
+  						<div class="col-md-2">
+  							<select name="formation_level" class="form-control">
+							  <option value="level1">level 1</option> 
+							  <option value="level2">level 2</option>
+							  <option value="level3">level 3</option>
+							</select>
+  						</div>
+  						<div class="col-md-3">
+  							<select name="formation_type" class="form-control">
+							  <option value="type1">type 1</option> 
+							  <option value="type2">type 2</option>
+							  <option value="type3">type 3</option>
+							</select>
+  						</div>
+  						<div class="col-md-2">
+  							<select name="formation_duration" class="form-control">
+							  <option value="duration1">duration 1</option> 
+							  <option value="duration2">duration 2</option>
+							  <option value="duration3">duration 3</option>
+							</select>
+  						</div>
+  						<div class="col-md-1">
+  							<button class="btn btn-primary btn-block" type="submit">
+  								<i class="glyphicon glyphicon-search"></i>
+  							</button>
+						</div>
+  					</div>
+				</div>
+			</form>
+		</div>
+	</section>	
+{% endblock %}

@@ -50,10 +50,17 @@ class SecurityController extends Controller
             ->set('email', $user->getEmail())
             ->getToken();
 
-        $data = $this->get('serializer')->serialize([
-            'token' => $token->__toString()
-        ], 'json');
+        $data = [
+            "status" => "200 (ok)"
+        ];
 
-        return new Response($data);
+        $headers = apache_request_headers();
+        $headers['Authorization'] = "Bearer " . $token->__toString();
+
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Authorization', "Bearer " . $token->__toString());
+
+        return $response;
     }
 }

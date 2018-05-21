@@ -1,0 +1,8 @@
+{% block stylesheets %}
+    {% stylesheets filter='scssphp' output='assets/css/compiled/app.css'
+        'assets/css/bootstrap.css'
+        'assets/scss/main.scss'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

@@ -20,7 +20,8 @@ class AppKernel extends Kernel
             new JMS\Payment\CoreBundle\JMSPaymentCoreBundle(),
             new JMS\Payment\PaypalBundle\JMSPaymentPaypalBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-            new Nelmio\ApiDocBundle\NelmioApiDocBundle()
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new \Nelmio\CorsBundle\NelmioCorsBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

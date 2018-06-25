@@ -32,6 +32,8 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
         $encoder = $this->container->get('security.password_encoder');
         for ($i = 0; $i < 5; $i++) {
             $user = new User();
+            $user->setFirstname('firstname'.$i);
+            $user->setLastname('lastname'. $i);
             $user->setUsername('user'.$i);
             $password = $encoder->encodePassword($user, 'user'.$i);
             $user->setPassword($password);
@@ -39,6 +41,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $user->setRoles(array('ROLE_USER'));
             $user->setLastLogin(null);
             $user->setSituation($this->getReference('situation1'));
+            $user->setSector($this->getReference('sector1'));
             $user->setImage(null);
             $user->setImageFile(null);
             $user->setCreatedAt(date_create(date("Y-m-d H:i:s")));
@@ -48,6 +51,8 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
 
         for ($i = 5; $i < 10; $i++) {
             $userAdmin = new User();
+            $userAdmin->setFirstname('firstname'.$i);
+            $userAdmin->setLastname('lastname'. $i);
             $userAdmin->setUsername('user'.$i);
             $password = $encoder->encodePassword($userAdmin, 'user'.$i);
             $userAdmin->setPassword($password);
@@ -55,6 +60,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userAdmin->setRoles(array('ROLE_ADMIN'));
             $userAdmin->setLastLogin(null);
             $userAdmin->setSituation($this->getReference('situation2'));
+            $userAdmin->setSector($this->getReference('sector2'));
             $userAdmin->setImage(null);
             $userAdmin->setImageFile(null);
             $userAdmin->setCreatedAt(date_create(date("Y-m-d H:i:s")));
@@ -64,13 +70,16 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
 
         for ($i = 11; $i < 15; $i++) {
             $userFormer = new User();
+            $userFormer->setFirstname('firstname'.$i);
+            $userFormer->setLastname('lastname'. $i);
             $userFormer->setUsername('user'.$i);
             $password = $encoder->encodePassword($userFormer, 'user'.$i);
             $userFormer->setPassword($password);
             $userFormer->setEmail('user' .$i . '@gmail.com');
             $userFormer->setRoles(array('ROLE_FORMER'));
             $userFormer->setLastLogin(null);
-            $userFormer->setSituation($this->getReference('situation3'));
+            $userFormer->setSituation($this->getReference('situation2'));
+            $userFormer->setSector($this->getReference('sector3'));
             $userFormer->setImage(null);
             $userFormer->setImageFile(null);
             $userFormer->setCreatedAt(date_create(date("Y-m-d H:i:s")));
@@ -84,7 +93,8 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
     public function getDependencies()
     {
         return array(
-            SituationFixtures::class
+            SituationFixtures::class,
+            SectorFixtures::class
         );
     }
 }

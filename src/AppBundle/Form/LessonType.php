@@ -39,11 +39,11 @@ class LessonType extends AbstractType
                 'description' => 'Duration of the lesson',
             ))
             ->add('sector', EntityType::class, array(
-                'class'=>'AppBundle:SectorType',
+                'class'=>'AppBundle:Sector',
                 'description' => 'Sector concerned by the lesson',
             ))
             ->add('level', EntityType::class, array(
-                'class'=>'AppBundle:LevelType',
+                'class'=>'AppBundle:Level',
                 'description' => 'Level required for the lesson',
             ));
     }

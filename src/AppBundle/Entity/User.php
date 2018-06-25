@@ -32,6 +32,22 @@ class User implements UserInterface
     /**
      * @var string
      *
+     * @ORM\Column(name="firstname", type="string", length=50)
+     * @Assert\NotBlank(message="Please enter a firstname.")
+     */
+    private $firstname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lastname", type="string", length=50)
+     * @Assert\NotBlank(message="Please enter a lastname.")
+     */
+    private $lastname;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="username", type="string", length=50, unique=true)
      * @Assert\NotBlank(message="Please enter a username.")
      */
@@ -105,9 +121,15 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Situation")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $situation;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sector")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $sector;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -519,5 +541,77 @@ class User implements UserInterface
     public function getCvName()
     {
         return $this->cvName;
+    }
+
+    /**
+     * Set firstname
+     *
+     * @param string $firstname
+     *
+     * @return User
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get firstname
+     *
+     * @return string
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * Set lastname
+     *
+     * @param string $lastname
+     *
+     * @return User
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * Get lastname
+     *
+     * @return string
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * Set sector
+     *
+     * @param \AppBundle\Entity\Sector $sector
+     *
+     * @return User
+     */
+    public function setSector(\AppBundle\Entity\Sector $sector)
+    {
+        $this->sector = $sector;
+
+        return $this;
+    }
+
+    /**
+     * Get sector
+     *
+     * @return \AppBundle\Entity\Sector
+     */
+    public function getSector()
+    {
+        return $this->sector;
     }
 }

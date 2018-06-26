@@ -27,6 +27,10 @@ class UserUpdateType extends AbstractType
             ->add('password', TextType::class, array(
                 'description' => 'Password of the user',
             ))
+            ->add('country', EntityType::class, array(
+                'class'=>'AppBundle:Country',
+                'description' => 'Country',
+            ))
             ->add('sector', EntityType::class, array(
                 'class'=>'AppBundle:Sector',
                 'description' => 'Working sector',

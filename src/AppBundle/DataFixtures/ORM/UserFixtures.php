@@ -13,7 +13,6 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserFixtures extends Fixture implements ContainerAwareInterface
 {
@@ -42,6 +41,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $user->setLastLogin(null);
             $user->setSituation($this->getReference('situation1'));
             $user->setSector($this->getReference('sector1'));
+            $user->setCountry($this->getReference('country1'));
             $user->setImage(null);
             $user->setImageFile(null);
             $user->setCreatedAt(date_create(date("Y-m-d H:i:s")));
@@ -61,6 +61,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userAdmin->setLastLogin(null);
             $userAdmin->setSituation($this->getReference('situation2'));
             $userAdmin->setSector($this->getReference('sector2'));
+            $userAdmin->setCountry($this->getReference('country2'));
             $userAdmin->setImage(null);
             $userAdmin->setImageFile(null);
             $userAdmin->setCreatedAt(date_create(date("Y-m-d H:i:s")));
@@ -80,6 +81,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userFormer->setLastLogin(null);
             $userFormer->setSituation($this->getReference('situation2'));
             $userFormer->setSector($this->getReference('sector3'));
+            $userFormer->setCountry($this->getReference('country3'));
             $userFormer->setImage(null);
             $userFormer->setImageFile(null);
             $userFormer->setCreatedAt(date_create(date("Y-m-d H:i:s")));
@@ -94,7 +96,8 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
     {
         return array(
             SituationFixtures::class,
-            SectorFixtures::class
+            SectorFixtures::class,
+            CountryFixtures::class
         );
     }
 }

@@ -62,6 +62,12 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Country")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $country;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
@@ -613,5 +619,29 @@ class User implements UserInterface
     public function getSector()
     {
         return $this->sector;
+    }
+
+    /**
+     * Set country
+     *
+     * @param \AppBundle\Entity\Country $country
+     *
+     * @return User
+     */
+    public function setCountry(\AppBundle\Entity\Country $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \AppBundle\Entity\Country
+     */
+    public function getCountry()
+    {
+        return $this->country;
     }
 }

@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Form\Model\ChangePassword;
+use AppBundle\Form\UserChangePasswordType;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -122,7 +124,7 @@ class UserController extends Controller
     /**
      * Displays a form to edit an existing user entity.
      *
-     * @Route("/{id}/edit", name="user_edit")
+     * @Route("/{id}/edit/password", name="user_edit_password")
      * @Method({"POST"})
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -137,9 +139,9 @@ class UserController extends Controller
      *  }
      * )
      */
-    public function editAction(Request $request, User $user, UserPasswordEncoderInterface $encoder)
-    {
-        $editForm = $this->createForm('AppBundle\Form\UserChangePasswordType', $user);
+    public function updatePasswordAction(Request $request, User $user, UserPasswordEncoderInterface $encoder){
+        $changePasswordModel = new ChangePassword();
+        $editForm = $this->createForm('AppBundle\Form\UserChangePasswordType', $changePasswordModel);
 
         $editForm->submit(json_decode($request->getContent(), true));
 
@@ -157,6 +159,44 @@ class UserController extends Controller
             return new JsonResponse($data, 400);
         }
     }
+
+    /**
+     * Displays a form to edit an existing user entity.
+     *
+     * @Route("/{id}/edit/", name="user_edit)
+     * @Method({"POST"})
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *  description="Update user data",
+     *  section="User",
+     *  input={
+     *   "class"="AppBundle\Form\UserUpdateType",
+     *  },
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
+     */
+    /*public function editPasswordAction(Request $request, User $user, UserPasswordEncoderInterface $encoder)
+    {
+        $editForm = $this->createForm('AppBundle\Form\UserUpdateType', $user);
+
+        $editForm->submit(json_decode($request->getContent(), true));
+
+        if($editForm->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($user), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($editForm);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
+            return new JsonResponse($data, 400);
+        }
+    }*/
 
     /**
      * Deletes a user entity.

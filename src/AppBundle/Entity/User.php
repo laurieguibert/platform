@@ -32,7 +32,7 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="firstname", type="string", length=50)
+     * @ORM\Column(name="firstname", type="string", length=50, nullable=true)
      * @Assert\NotBlank(message="Please enter a firstname.")
      */
     private $firstname;
@@ -40,7 +40,7 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="lastname", type="string", length=50)
+     * @ORM\Column(name="lastname", type="string", length=50, nullable=true)
      * @Assert\NotBlank(message="Please enter a lastname.")
      */
     private $lastname;

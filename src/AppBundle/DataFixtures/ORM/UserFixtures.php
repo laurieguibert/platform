@@ -41,6 +41,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $user->setLastLogin(null);
             $user->setSituation($this->getReference('situation1'));
             $user->setSector($this->getReference('sector1'));
+            $user->setSchool('user_school'.$i);
             $user->setCountry($this->getReference('country1'));
             $user->setImage(null);
             $user->setImageFile(null);
@@ -61,6 +62,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userAdmin->setLastLogin(null);
             $userAdmin->setSituation($this->getReference('situation2'));
             $userAdmin->setSector($this->getReference('sector2'));
+            $userAdmin->setSchool('user_school'.$i);
             $userAdmin->setCountry($this->getReference('country2'));
             $userAdmin->setImage(null);
             $userAdmin->setImageFile(null);
@@ -81,6 +83,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userFormer->setLastLogin(null);
             $userFormer->setSituation($this->getReference('situation2'));
             $userFormer->setSector($this->getReference('sector3'));
+            $userFormer->setSchool('user_school'.$i);
             $userFormer->setCountry($this->getReference('country3'));
             $userFormer->setImage(null);
             $userFormer->setImageFile(null);

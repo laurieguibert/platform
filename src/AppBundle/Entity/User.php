@@ -138,6 +138,13 @@ class User implements UserInterface
     private $sector;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="school", type="string", length=100, nullable=true)
+     */
+    private $school;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @var string
      */
@@ -167,12 +174,17 @@ class User implements UserInterface
     private $userLesson;
 
     public function __construct() {
+        $this->firstname = null;
+        $this->lastname = null;
         $this->roles = array("ROLE_USER");
         $this->status = 1;
         $this->createdAt = new \DateTime("now");
         $this->updatedAt = null;
         $this->description = null;
         $this->linkedin = null;
+        $this->school = null;
+        $this->sector = null;
+        $this->country = null;
     }
 
     /**
@@ -643,5 +655,29 @@ class User implements UserInterface
     public function getCountry()
     {
         return $this->country;
+    }
+
+    /**
+     * Set school
+     *
+     * @param string $school
+     *
+     * @return User
+     */
+    public function setSchool($school)
+    {
+        $this->school = $school;
+
+        return $this;
+    }
+
+    /**
+     * Get school
+     *
+     * @return string
+     */
+    public function getSchool()
+    {
+        return $this->school;
     }
 }

@@ -8,6 +8,7 @@
  */
 namespace AppBundle\DataFixtures\ORM;
 
+use AppBundle\Entity\StudiesLevel;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -41,6 +42,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $user->setLastLogin(null);
             $user->setSituation($this->getReference('situation1'));
             $user->setSector($this->getReference('sector1'));
+            $user->setStudiesLevel($this->getReference('studiesLevel1'));
             $user->setSchool('user_school'.$i);
             $user->setCountry($this->getReference('country1'));
             $user->setImage(null);
@@ -62,6 +64,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userAdmin->setLastLogin(null);
             $userAdmin->setSituation($this->getReference('situation2'));
             $userAdmin->setSector($this->getReference('sector2'));
+            $userAdmin->setStudiesLevel($this->getReference('studiesLevel2'));
             $userAdmin->setSchool('user_school'.$i);
             $userAdmin->setCountry($this->getReference('country2'));
             $userAdmin->setImage(null);
@@ -81,8 +84,9 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userFormer->setEmail('user' .$i . '@gmail.com');
             $userFormer->setRoles(array('ROLE_FORMER'));
             $userFormer->setLastLogin(null);
-            $userFormer->setSituation($this->getReference('situation2'));
+            $userFormer->setSituation($this->getReference('situation3'));
             $userFormer->setSector($this->getReference('sector3'));
+            $userFormer->setStudiesLevel($this->getReference('studiesLevel3'));
             $userFormer->setSchool('user_school'.$i);
             $userFormer->setCountry($this->getReference('country3'));
             $userFormer->setImage(null);
@@ -100,7 +104,8 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
         return array(
             SituationFixtures::class,
             SectorFixtures::class,
-            CountryFixtures::class
+            CountryFixtures::class,
+            StudiesLevelFixtures::class
         );
     }
 }

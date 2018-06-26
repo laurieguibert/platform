@@ -34,6 +34,9 @@ class UserUpdateType extends AbstractType
             ->add('school', TextType::class, array(
                 'description' => 'School of the user',
             ))
+            ->add('studiesLevel', EntityType::class, array(
+                'description' => 'Studies\' level of the user',
+            ))
             ->add('sector', EntityType::class, array(
                 'class'=>'AppBundle:Sector',
                 'description' => 'Working sector',

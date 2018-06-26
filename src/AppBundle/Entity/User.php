@@ -145,6 +145,12 @@ class User implements UserInterface
     private $school;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\StudiesLevel")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $studiesLevel;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @var string
      */
@@ -185,6 +191,7 @@ class User implements UserInterface
         $this->school = null;
         $this->sector = null;
         $this->country = null;
+        $this->studiesLevel = null;
     }
 
     /**
@@ -679,5 +686,29 @@ class User implements UserInterface
     public function getSchool()
     {
         return $this->school;
+    }
+
+    /**
+     * Set studiesLevel
+     *
+     * @param \AppBundle\Entity\StudiesLevel $studiesLevel
+     *
+     * @return User
+     */
+    public function setStudiesLevel(\AppBundle\Entity\StudiesLevel $studiesLevel = null)
+    {
+        $this->studiesLevel = $studiesLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get studiesLevel
+     *
+     * @return \AppBundle\Entity\StudiesLevel
+     */
+    public function getStudiesLevel()
+    {
+        return $this->studiesLevel;
     }
 }

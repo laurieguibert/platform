@@ -41,6 +41,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $user->setRoles(array('ROLE_USER'));
             $user->setLastLogin(null);
             $user->setSituation($this->getReference('situation1'));
+            $user->setCurrentPosition('position'.$i);
             $user->setSector($this->getReference('sector1'));
             $user->setStudiesLevel($this->getReference('studiesLevel1'));
             $user->setSchool('user_school'.$i);
@@ -63,6 +64,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userAdmin->setRoles(array('ROLE_ADMIN'));
             $userAdmin->setLastLogin(null);
             $userAdmin->setSituation($this->getReference('situation2'));
+            $userAdmin->setCurrentPosition('position'.$i);
             $userAdmin->setSector($this->getReference('sector2'));
             $userAdmin->setStudiesLevel($this->getReference('studiesLevel2'));
             $userAdmin->setSchool('user_school'.$i);
@@ -85,6 +87,7 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
             $userFormer->setRoles(array('ROLE_FORMER'));
             $userFormer->setLastLogin(null);
             $userFormer->setSituation($this->getReference('situation3'));
+            $userFormer->setCurrentPosition('position'.$i);
             $userFormer->setSector($this->getReference('sector3'));
             $userFormer->setStudiesLevel($this->getReference('studiesLevel3'));
             $userFormer->setSchool('user_school'.$i);

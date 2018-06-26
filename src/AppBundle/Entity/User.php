@@ -105,20 +105,6 @@ class User implements UserInterface
     private $roles;
 
     /**
-     * @var \DateTime $createdAt
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime $updatedAt
-     *
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    protected $updatedAt;
-
-    /**
      * @var \DateTime $lastLogin
      *
      * @ORM\Column(type="datetime", nullable = true)
@@ -136,6 +122,13 @@ class User implements UserInterface
      * @ORM\JoinColumn(nullable=true)
      */
     private $sector;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_position", type="string", length=150, nullable=true)
+     */
+    private $currentPosition;
 
     /**
      * @var string
@@ -178,6 +171,20 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="user", cascade={"persist"})
      */
     private $userLesson;
+
+    /**
+     * @var \DateTime $createdAt
+     *
+     * @ORM\Column(type="datetime", precision=6)
+     */
+    protected $createdAt;
+
+    /**
+     * @var \DateTime $updatedAt
+     *
+     * @ORM\Column(type="datetime", nullable = true, precision=6)
+     */
+    protected $updatedAt;
 
     public function __construct() {
         $this->firstname = null;
@@ -334,62 +341,6 @@ class User implements UserInterface
     public function getSalt()
     {
         return null;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return User
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return User
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function updateDate()
-    {
-        $this->setUpdatedAt(new \Datetime());
     }
 
     public function setImageFile(File $image = null)
@@ -710,5 +661,85 @@ class User implements UserInterface
     public function getStudiesLevel()
     {
         return $this->studiesLevel;
+    }
+
+    /**
+     * Set currentPosition
+     *
+     * @param string $currentPosition
+     *
+     * @return User
+     */
+    public function setCurrentPosition($currentPosition)
+    {
+        $this->currentPosition = $currentPosition;
+
+        return $this;
+    }
+
+    /**
+     * Get currentPosition
+     *
+     * @return string
+     */
+    public function getCurrentPosition()
+    {
+        return $this->currentPosition;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return User
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return User
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \Datetime());
     }
 }

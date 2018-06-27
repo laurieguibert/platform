@@ -6,6 +6,7 @@ use AppBundle\Entity\Country;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Country controller.
@@ -26,9 +27,11 @@ class CountryController extends Controller
 
         $countries = $em->getRepository('AppBundle:Country')->findAll();
 
-        return $this->render('country/index.html.twig', array(
-            'countries' => $countries,
-        ));
+        $data = $this->get('serializer')->normalize([
+            'countries' => $countries
+        ]);
+
+        return new JsonResponse($data);
     }
 
     /**

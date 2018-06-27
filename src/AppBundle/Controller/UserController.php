@@ -250,8 +250,8 @@ class UserController extends Controller
         if($user === null){
             return new Response("No user registered with this id", 404);
         } else {
-            $lessons = $user->getLessons();
-            if (isset($lessons)) {
+            $lessons = $user->getUserLesson();
+            if (!isset($lessons)) {
                 return new Response("No lesson registered for the user !", 404);
             } else {
                 $data = $this->get('serializer')->normalize([

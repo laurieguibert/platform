@@ -144,9 +144,9 @@ class UserController extends Controller
         $editForm = $this->createForm('AppBundle\Form\UserChangePasswordType', $changePasswordModel);
 
         $editForm->submit(json_decode($request->getContent(), true));
-
+        $request = json_decode($request->getContent(), true);
         if($editForm->isValid()){
-            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+            $user->setPassword($encoder->encodePassword($user, $request['newPassword']['first']));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();

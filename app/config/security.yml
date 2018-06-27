@@ -25,6 +25,10 @@ security:
                 authenticators:
                    - AppBundle\Controller\Security\Authenticator\UserLoginAuthenticator
 
+        register:
+          pattern: /user/new
+          security: false
+
         main:
             anonymous: ~
             stateless: true

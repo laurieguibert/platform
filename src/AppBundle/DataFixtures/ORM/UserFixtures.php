@@ -8,7 +8,6 @@
  */
 namespace AppBundle\DataFixtures\ORM;
 
-use AppBundle\Entity\StudiesLevel;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -77,26 +76,26 @@ class UserFixtures extends Fixture implements ContainerAwareInterface
         }
 
         for ($i = 11; $i < 15; $i++) {
-            $userFormer = new User();
-            $userFormer->setFirstname('firstname'.$i);
-            $userFormer->setLastname('lastname'. $i);
-            $userFormer->setUsername('user'.$i);
-            $password = $encoder->encodePassword($userFormer, 'user'.$i);
-            $userFormer->setPassword($password);
-            $userFormer->setEmail('user' .$i . '@gmail.com');
-            $userFormer->setRoles(array('ROLE_FORMER'));
-            $userFormer->setLastLogin(null);
-            $userFormer->setSituation($this->getReference('situation3'));
-            $userFormer->setCurrentPosition('position'.$i);
-            $userFormer->setSector($this->getReference('sector3'));
-            $userFormer->setStudiesLevel($this->getReference('studiesLevel3'));
-            $userFormer->setSchool('user_school'.$i);
-            $userFormer->setCountry($this->getReference('country3'));
-            $userFormer->setImage(null);
-            $userFormer->setImageFile(null);
-            $userFormer->setCreatedAt(date_create(date("Y-m-d H:i:s")));
-            $manager->persist($userFormer);
-            $this->addReference('userFormer'.$i, $userFormer);
+            $userTrainer = new User();
+            $userTrainer->setFirstname('firstname'.$i);
+            $userTrainer->setLastname('lastname'. $i);
+            $userTrainer->setUsername('user'.$i);
+            $password = $encoder->encodePassword($userTrainer, 'user'.$i);
+            $userTrainer->setPassword($password);
+            $userTrainer->setEmail('user' .$i . '@gmail.com');
+            $userTrainer->setRoles(array('ROLE_TRAINER'));
+            $userTrainer->setLastLogin(null);
+            $userTrainer->setSituation($this->getReference('situation3'));
+            $userTrainer->setCurrentPosition('position'.$i);
+            $userTrainer->setSector($this->getReference('sector3'));
+            $userTrainer->setStudiesLevel($this->getReference('studiesLevel3'));
+            $userTrainer->setSchool('user_school'.$i);
+            $userTrainer->setCountry($this->getReference('country3'));
+            $userTrainer->setImage(null);
+            $userTrainer->setImageFile(null);
+            $userTrainer->setCreatedAt(date_create(date("Y-m-d H:i:s")));
+            $manager->persist($userTrainer);
+            $this->addReference('userFormer'.$i, $userTrainer);
         }
 
         $manager->flush();

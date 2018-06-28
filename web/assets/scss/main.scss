@@ -25,7 +25,7 @@ h1 {
 
 .full-screen {
 	height: 100vh;
-	background-image: url('../../images/full_background.png');
+	background-image: url({{ asset('assets/images/full_background.png')}});
 	background-size: cover; 
 	padding-top: 65vh; 
 }

@@ -165,6 +165,20 @@ class User implements UserInterface
     private $cvFile;
 
     /**
+     * @var \DateTime $askTrainer
+     *
+     * @ORM\Column(type="datetime", nullable = true, precision=6)
+     */
+    private $askTrainer;
+
+    /**
+     * @var \DateTime $answerTrainer
+     *
+     * @ORM\Column(type="datetime", nullable = true, precision=6)
+     */
+    private $answerTrainer;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="user", cascade={"persist"})
      */
     private $userLesson;
@@ -197,6 +211,8 @@ class User implements UserInterface
         $this->sector = null;
         $this->country = null;
         $this->studiesLevel = null;
+        $this->askTrainer = null;
+        $this->answerTrainer = null;
     }
 
     /**
@@ -739,5 +755,53 @@ class User implements UserInterface
     public function updateDate()
     {
         $this->setUpdatedAt(new \Datetime());
+    }
+
+    /**
+     * Set askTrainer
+     *
+     * @param \DateTime $askTrainer
+     *
+     * @return User
+     */
+    public function setAskTrainer($askTrainer)
+    {
+        $this->askTrainer = $askTrainer;
+
+        return $this;
+    }
+
+    /**
+     * Get askTrainer
+     *
+     * @return \DateTime
+     */
+    public function getAskTrainer()
+    {
+        return $this->askTrainer;
+    }
+
+    /**
+     * Set answerTrainer
+     *
+     * @param \DateTime $answerTrainer
+     *
+     * @return User
+     */
+    public function setAnswerTrainer($answerTrainer)
+    {
+        $this->answerTrainer = $answerTrainer;
+
+        return $this;
+    }
+
+    /**
+     * Get answerTrainer
+     *
+     * @return \DateTime
+     */
+    public function getAnswerTrainer()
+    {
+        return $this->answerTrainer;
     }
 }

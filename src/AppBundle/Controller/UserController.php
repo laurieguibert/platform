@@ -43,7 +43,7 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $users = $em->getRepository('AppBundle:User')->findAll();
-        if(empty($users)){
+        if (empty($users)) {
             return new Response("No user registered !", 404);
         }
 
@@ -77,7 +77,7 @@ class UserController extends Controller
         $form = $this->createForm('AppBundle\Form\UserType', $user);
         $form->submit(json_decode($request->getContent(), true));
 
-        if($form->isValid()){
+        if ($form->isValid()) {
             $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -139,13 +139,14 @@ class UserController extends Controller
      *  }
      * )
      */
-    public function updatePasswordAction(Request $request, User $user, UserPasswordEncoderInterface $encoder){
+    public function updatePasswordAction(Request $request, User $user, UserPasswordEncoderInterface $encoder)
+    {
         $changePasswordModel = new ChangePassword();
         $editForm = $this->createForm('AppBundle\Form\UserChangePasswordType', $changePasswordModel);
 
         $editForm->submit(json_decode($request->getContent(), true));
         $request = json_decode($request->getContent(), true);
-        if($editForm->isValid()){
+        if ($editForm->isValid()) {
             $user->setPassword($encoder->encodePassword($user, $request['newPassword']['first']));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
@@ -184,7 +185,7 @@ class UserController extends Controller
 
         $editForm->submit(json_decode($request->getContent(), true));
 
-        if($editForm->isValid()){
+        if ($editForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
@@ -247,7 +248,7 @@ class UserController extends Controller
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneById($id);
-        if($user === null){
+        if ($user === null) {
             return new Response("No user registered with this id", 404);
         } else {
             $lessons = $user->getUserLesson();
@@ -261,5 +262,29 @@ class UserController extends Controller
                 return new JsonResponse($data, 200);
             }
         }
+    }
+
+    /**
+     * User action to ask for becoming trainer
+     *
+     * @Route("/{id}/become_trainer", name="user_become_trainer")
+     * @Method({"POST"})
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *  description="User form to become trainer",
+     *  section="User",
+     *  statusCodes={
+     *     200="Successful",
+     *     404="Not found"
+     *  }
+     * )
+     */
+    public function askTrainerAction(Request $request, User $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user->setAskTrainer(new \DateTime("now"));
+        $em->persist($user);
+        $em->flush();
+        return new JsonResponse($this->get('serializer')->normalize($user), 200);
     }
 }

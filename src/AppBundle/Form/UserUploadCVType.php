@@ -24,7 +24,7 @@ class UserUploadCVType extends AbstractType
         $builder
             ->add('cvFile', VichFileType::class, array(
                 'required' => true,
-                'allow_delete' => true,
+                'allow_delete' => false,
                 'label' => "CV"
             ));
     }

@@ -98,6 +98,9 @@ vich_uploader:
         cv_files:
             uri_prefix:         '%app.path.cv_files%'
             upload_destination: '%kernel.root_dir%/../web/uploads/files/users/cv'
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
 
 jms_payment_core:
     encryption:

@@ -96,8 +96,8 @@ vich_uploader:
             uri_prefix:         '%app.path.user_images%'
             upload_destination: '%kernel.root_dir%/../web/uploads/images/users'
         cv_files:
-                    uri_prefix:         '%app.path.cv_files%'
-                    upload_destination: '%kernel.root_dir%/../web/uploads/files/users/cv'
+            uri_prefix:         '%app.path.cv_files%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/users/cv'
 
 jms_payment_core:
     encryption:

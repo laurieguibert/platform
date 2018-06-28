@@ -131,4 +131,34 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * List users asking for training
+     *
+     * @Route("/user/asking_trainer", name="admin_user_asking_trainer")
+     * @Method({"GET"})
+     * @ApiDoc(
+     *  description="List users asking for training",
+     *  section="User",
+     *  output= { "class"=User::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
+     */
+    public function listAskingTrainersAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $users = $em->getRepository('AppBundle:User')->getUsersAskingTrainer();
+        if(empty($users)){
+            return new Response("No user waiting for training validation", 404);
+        }
+
+        $data = $this->get('serializer')->normalize([
+            'users' => $users
+        ]);
+        return new JsonResponse($data, 200);
+    }
+
 }

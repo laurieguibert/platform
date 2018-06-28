@@ -10,12 +10,12 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getUserWithoutPassword(){
-        $fields = array('d.id', 'd.username', 'd.email');
-
-        $query = $this->getEntityManager()->createQueryBuilder();
-        $query = $this->createQueryBuilder('d')
-            ->select($fields)
+    public function getUsersAskingTrainer(){
+        $query = $this->getEntityManager()->createQueryBuilder()
+            -> select('t')
+            ->from('AppBundle:User', 't')
+            ->where('t.askTrainer IS NOT NULL')
+            ->andWhere('t.answerTrainer IS NULL')
             ->getQuery();
 
         return $query->execute();

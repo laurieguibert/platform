@@ -381,40 +381,6 @@ class User implements UserInterface
     }
 
     /**
-     * Add userLesson
-     *
-     * @param \AppBundle\Entity\UserLesson $userLesson
-     *
-     * @return User
-     */
-    public function addUserLesson(\AppBundle\Entity\UserLesson $userLesson)
-    {
-        $this->userLesson[] = $userLesson;
-
-        return $this;
-    }
-
-    /**
-     * Remove userLesson
-     *
-     * @param \AppBundle\Entity\UserLesson $userLesson
-     */
-    public function removeUserLesson(\AppBundle\Entity\UserLesson $userLesson)
-    {
-        $this->userLesson->removeElement($userLesson);
-    }
-
-    /**
-     * Get userLesson
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getUserLesson()
-    {
-        return $this->userLesson;
-    }
-
-    /**
      * Set lastLogin
      *
      * @param \DateTime $lastLogin
@@ -699,6 +665,40 @@ class User implements UserInterface
     public function getCurrentPosition()
     {
         return $this->currentPosition;
+    }
+
+    /**
+     * Add userLesson
+     *
+     * @param \AppBundle\Entity\UserLesson $userLesson
+     *
+     * @return User
+     */
+    public function addUserLesson(\AppBundle\Entity\UserLesson $userLesson)
+    {
+        $this->userLesson[] = $userLesson;
+
+        return $this;
+    }
+
+    /**
+     * Remove userLesson
+     *
+     * @param \AppBundle\Entity\UserLesson $userLesson
+     */
+    public function removeUserLesson(\AppBundle\Entity\UserLesson $userLesson)
+    {
+        $this->userLesson->removeElement($userLesson);
+    }
+
+    /**
+     * Get userLesson
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserLesson()
+    {
+        return $this->userLesson;
     }
 
     /**

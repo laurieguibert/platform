@@ -163,7 +163,7 @@ class UserController extends Controller
     /**
      * Displays a form to edit an existing user entity.
      *
-     * @Route("/{id}/edit/", name="user_edit)
+     * @Route("/{id}/edit", name="user_edit")
      * @Method({"POST"})
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -178,7 +178,7 @@ class UserController extends Controller
      *  }
      * )
      */
-    /*public function editPasswordAction(Request $request, User $user, UserPasswordEncoderInterface $encoder)
+    public function editAction(Request $request, User $user)
     {
         $editForm = $this->createForm('AppBundle\Form\UserUpdateType', $user);
 
@@ -196,7 +196,7 @@ class UserController extends Controller
             $data = $formErrorRenderer->renderErrors($errors);
             return new JsonResponse($data, 400);
         }
-    }*/
+    }
 
     /**
      * Deletes a user entity.

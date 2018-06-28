@@ -33,7 +33,6 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=50, nullable=true)
-     * @Assert\NotBlank(message="Please enter a firstname.")
      */
     private $firstname;
 
@@ -41,15 +40,13 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=50, nullable=true)
-     * @Assert\NotBlank(message="Please enter a lastname.")
      */
     private $lastname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=50, unique=true)
-     * @Assert\NotBlank(message="Please enter a username.")
+     * @ORM\Column(name="username", type="string", length=50, unique=true, nullable=true)
      */
     private $username;
 
@@ -189,8 +186,9 @@ class User implements UserInterface
     public function __construct() {
         $this->firstname = null;
         $this->lastname = null;
+        $this->username = null;
         $this->roles = array("ROLE_USER");
-        $this->status = 1;
+        $this->status = 0;
         $this->createdAt = new \DateTime("now");
         $this->updatedAt = null;
         $this->description = null;

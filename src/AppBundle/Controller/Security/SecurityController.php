@@ -9,6 +9,7 @@
 namespace AppBundle\Controller\Security;
 
 
+use AppBundle\Entity\User;
 use Lcobucci\JWT\Builder;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -17,8 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends Controller
 {
@@ -62,5 +62,44 @@ class SecurityController extends Controller
         $response->headers->set('Authorization', "Bearer " . $token->__toString());
 
         return $response;
+    }
+
+    /**
+     * Register new user.
+     *
+     * @Route("/register", name="registration")
+     * @Method({"POST"})
+     * @ApiDoc(
+     *  description="Register new user",
+     *  section="Security",
+     *  input={
+     *   "class"="AppBundle\Form\UserRegistrationType",
+     *  },
+     *  output= { "class"=User::class},
+     *  statusCodes={
+     *     200="Successful",
+     *     400="Validation errors"
+     *  }
+     * )
+     */
+    public function registerAction(Request $request, UserPasswordEncoderInterface $encoder)
+    {
+        $user = new User();
+        $form = $this->createForm('AppBundle\Form\UserRegistrationType', $user);
+        $form->submit(json_decode($request->getContent(), true));
+
+        if($form->isValid()){
+            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            return new JsonResponse($this->get('serializer')->normalize($user), 200);
+        } else {
+            $formErrorsRecuperator = $this->get('AppBundle\Service\FormErrorsRecuperator');
+            $errors = $formErrorsRecuperator->getFormErrors($form);
+            $formErrorRenderer = $this->get('AppBundle\Service\FormErrorsRenderer');
+            $data = $formErrorRenderer->renderErrors($errors);
+            return new JsonResponse($data, 400);
+        }
     }
 }

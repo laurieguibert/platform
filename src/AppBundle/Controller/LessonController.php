@@ -148,8 +148,8 @@ class LessonController extends Controller
     public function editAction(Request $request, Lesson $lesson)
     {
         $editForm = $this->createForm('AppBundle\Form\LessonType', $lesson);
-
-        $editForm->submit(json_decode($request->getContent(), true));
+        $clearMissing = $request->getMethod() != 'PATCH';
+        $editForm->submit(json_decode($request->getContent(), true), $clearMissing);
 
         if($editForm->isValid()){
             $em = $this->getDoctrine()->getManager();

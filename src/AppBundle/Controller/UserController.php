@@ -165,7 +165,7 @@ class UserController extends Controller
      * Displays a form to edit an existing user entity.
      *
      * @Route("/{id}/edit", name="user_edit")
-     * @Method({"POST"})
+     * @Method({"POST", "PATCH"})
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *  description="Update user data",
@@ -182,8 +182,8 @@ class UserController extends Controller
     public function editAction(Request $request, User $user)
     {
         $editForm = $this->createForm('AppBundle\Form\UserUpdateType', $user);
-
-        $editForm->submit(json_decode($request->getContent(), true));
+        $clearMissing = $request->getMethod() != 'PATCH';
+        $editForm->submit(json_decode($request->getContent(), true), $clearMissing);
 
         if ($editForm->isValid()) {
             $em = $this->getDoctrine()->getManager();

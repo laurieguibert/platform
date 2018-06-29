@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use JMS\Serializer\Annotation as Serializer;
 /**
  * User
  *
@@ -55,6 +56,7 @@ class User implements UserInterface
      *
      * @ORM\Column(name="password", type="string", length=255)
      * @Assert\NotBlank(message="Please enter a password.")
+     * @Serializer\Groups({"login"})
      */
     private $password;
 
@@ -68,8 +70,8 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
-     * @Assert\NotBlank(message="Please enter an email.")
      * @Assert\Email(message="The email {{ value }} is not a valid email.")
+     * @Serializer\Groups({"login"})
      */
     private $email;
 
@@ -554,7 +556,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setSector(\AppBundle\Entity\Sector $sector)
+    public function setSector(\AppBundle\Entity\Sector $sector = null)
     {
         $this->sector = $sector;
 

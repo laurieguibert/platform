@@ -22,6 +22,7 @@ class UserUpdateType extends AbstractType
             ))
             ->add('email', EmailType::class, array(
                 'description' => 'Email of the user',
+                'required' => false
             ))
             ->add('country', EntityType::class, array(
                 'class'=>'AppBundle:Country',
@@ -40,6 +41,7 @@ class UserUpdateType extends AbstractType
             ->add('sector', EntityType::class, array(
                 'class'=>'AppBundle:Sector',
                 'description' => 'Working sector',
+                'required' => false
             ));
     }
 

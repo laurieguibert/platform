@@ -31,6 +31,8 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             $lesson->setSector($this->getReference('sector'.$i));
             $lesson->setImage(null);
             $lesson->setSummary($this->getReference('summary'.$i));
+            $lesson->setPrice(99.99);
+            $lesson->setAuthor($this->getReference('user'.$i));
             $lesson->setTags(array("SQL", "PHP"));
             $manager->persist($lesson);
             $this->addReference('lesson'.$i, $lesson);
@@ -47,7 +49,8 @@ class LessonFixtures extends Fixture implements DependentFixtureInterface
             LevelFixtures::class,
             DurationTypeFixtures::class,
             UserFixtures::class,
-            SummaryFixtures::class
+            SummaryFixtures::class,
+            UserFixtures::class
         );
     }
 }

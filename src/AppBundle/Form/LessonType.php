@@ -6,6 +6,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -45,6 +46,14 @@ class LessonType extends AbstractType
             ->add('level', EntityType::class, array(
                 'class'=>'AppBundle:Level',
                 'description' => 'Level required for the lesson',
+            ))
+            ->add('price', NumberType::class, array(
+                'description' => 'Price of the lesson',
+                'scale' => 2
+            ))
+            ->add('author', EntityType::class, array(
+                'class' => 'AppBundle:User',
+                'description' => 'Author of the lesson',
             ));
     }
     

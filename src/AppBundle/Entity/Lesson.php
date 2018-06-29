@@ -67,6 +67,13 @@ class Lesson
     private $duration;
 
     /**
+     * @var number
+     *
+     * @ORM\Column(type="decimal", precision=5, scale=2)
+     */
+    private $price;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="certificate", type="boolean")
@@ -103,6 +110,12 @@ class Lesson
     private $level;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Summary")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -114,13 +127,6 @@ class Lesson
      * @ORM\Column(name="tags", type="array", length=255)
      */
     private $tags;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    private $created_at;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\UserLesson", mappedBy="lesson", cascade={"persist"})
@@ -138,6 +144,13 @@ class Lesson
      * @var File
      */
     private $imageFile;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $created_at;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -232,6 +245,30 @@ class Lesson
     public function getDuration()
     {
         return $this->duration;
+    }
+
+    /**
+     * Set price
+     *
+     * @param string $price
+     *
+     * @return Lesson
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
     }
 
     /**
@@ -352,6 +389,30 @@ class Lesson
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set author
+     *
+     * @param \AppBundle\Entity\User $author
+     *
+     * @return Lesson
+     */
+    public function setAuthor(\AppBundle\Entity\User $author)
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 
     /**

@@ -130,7 +130,7 @@ class LessonController extends Controller
      * Displays a form to edit an existing lesson entity.
      *
      * @Route("/{id}/edit", name="lesson_edit")
-     * @Method({"POST"})
+     * @Method({"POST", "PATCH"})
      * @Security("has_role('ROLE_ADMIN')")
      * @ApiDoc(
      *  description="Update a lesson",

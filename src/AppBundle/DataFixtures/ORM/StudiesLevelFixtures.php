@@ -14,7 +14,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-class StudiesLevelFixtures extends Fixture implements ContainerAwareInterface
+class StudiesLevelFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {

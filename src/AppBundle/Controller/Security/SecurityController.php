@@ -54,8 +54,8 @@ class SecurityController extends Controller
             "status" => "200 (ok)"
         ];
 
-        $headers = apache_request_headers();
-        $headers['Authorization'] = "Bearer " . $token->__toString();
+        /*$headers = apache_request_headers();
+        $headers['Authorization'] = "Bearer " . $token->__toString();*/
 
         $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');

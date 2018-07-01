@@ -1,0 +1,6 @@
+parameters:
+    database_host:     %env(CLEARDB_DATABASE_URL)%
+    database_port:     ~
+    database_name:     'symfony'
+    database_user:     %env(DB_USER)%
+    database_password: %env(DB_PASS)%
